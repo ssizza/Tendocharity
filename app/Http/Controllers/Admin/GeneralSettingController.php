@@ -6,16 +6,8 @@ use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Lib\RequiredConfig;
 use App\Models\Admin;
-use App\Models\BillingSetting;
-use App\Models\ConfigurableGroup;
-use App\Models\DomainRegister;
-use App\Models\DomainSetup;
 use App\Models\Frontend;
 use App\Models\GatewayCurrency;
-use App\Models\Product;
-use App\Models\Server;
-use App\Models\ServerGroup;
-use App\Models\ServiceCategory;
 use App\Rules\FileTypeValidate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,52 +18,13 @@ class GeneralSettingController extends Controller
         $completed = [];
 
         $general = gs();
-        $billingSetting = BillingSetting::first();
 
         if($general->site_name && file_exists(getFilePath('logoIcon').'/logo.png')){
             $completed['name_and_logo'] = 1;
         }
 
-        if(ServiceCategory::first()){
-            $completed['service_category'] = 1;
-        }
-
-        if(Product::first()){
-            $completed['product'] = 1;
-        }
-
-        if(ConfigurableGroup::first()){
-            $completed['configurable_group'] = 1;
-        }
-
-        if(Server::first()){
-            $completed['server'] = 1;
-        }
-
-        if(ServerGroup::first()){
-            $completed['server_group'] = 1;
-        }
-
-        if(DomainSetup::first()){
-            $completed['domain_setup'] = 1;
-        }
-
-        if(DomainRegister::where('setup_done', 1)->first()){
-            $completed['domain_register'] = 1;
-        }
-
         if($general->last_cron && Carbon::parse($general->last_cron)->diffInMinutes() < 15){
             $completed['cron'] = 1;
-        }
-
-        $array = (array) $billingSetting->create_invoice;
-
-        if($billingSetting->create_default_invoice_days || $billingSetting->create_domain_invoice_days || array_filter($array)){
-            $completed['billing_setting'] = 1;
-        }
-
-        if(DomainRegister::getDefault()){
-            $completed['defaultDomainRegister'] = 1;
         }
 
         if(GatewayCurrency::first()){

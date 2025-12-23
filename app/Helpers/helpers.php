@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Cache;
 
 function systemDetails()
 {
-    $system['name'] = 'whmlab';
-    $system['version'] = '3.0';
-    $system['build_version'] = '5.1.13';
+    $system['name'] = 'Tendo Charity';
+    $system['version'] = '1.0';
+    $system['build_version'] = '0.1.03';
     return $system;
 }
 
