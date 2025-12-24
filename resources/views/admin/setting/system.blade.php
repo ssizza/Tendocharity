@@ -65,70 +65,10 @@
                                     <i class="las la-{{ @$completed['cron'] ? 'check text--success' : 'times text--danger' }}"></i>
                                     <a href="javascript:void(0)" class="cronModalBtn">@lang('Setup cron automation tasks') </a>
                                 </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['domain_setup'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.tld') ? route('admin.tld') : 'javascript:void(0)' }}">
-                                        @lang('Manage domain/TLD setup')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['domain_register'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.register.domain') ? route('admin.register.domain') : 'javascript:void(0)' }}">
-                                        @lang('Activate your first domain register')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['configurable_group'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.configurable.groups') ? route('admin.configurable.groups') : 'javascript:void(0)' }}">
-                                        @lang('Set configurable group')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['product'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.products') ? route('admin.products') : 'javascript:void(0)' }}">
-                                        @lang('Create your first product')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['setup_gateway'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.gateway.automatic.index') ? route('admin.gateway.automatic.index') : 'javascript:void(0)' }}">
-                                        @lang('Activate/add your first payment gateway')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['service_category'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.service.category') ? route('admin.service.category') : 'javascript:void(0)' }}">
-                                        @lang('Create first service category')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['server_group'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.groups.server') ? route('admin.groups.server') : 'javascript:void(0)' }}">
-                                        @lang('Create server group')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['server'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.servers') ? route('admin.servers') : 'javascript:void(0)' }}">
-                                        @lang('Setup at least one server')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['billing_setting'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.billing.setting') ? route('admin.billing.setting') : 'javascript:void(0)' }}">
-                                        @lang('Setup invoice generation days')
-                                    </a>
-                                </li>
-                                <li class="mt-2 text-dot">
-                                    <i class="las la-{{ @$completed['defaultDomainRegister'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                    <a href="{{ permit('admin.register.domain') ? route('admin.register.domain') : 'javascript:void(0)' }}">
-                                        @lang('Setup default domain register for domain availability')
-                                    </a>
-                                </li>
                                 @if(isSuperAdmin())
                                     <li class="mt-2 text-dot">
                                         <i class="las la-{{ @$completed['admin_profile_setup'] ? 'check text--success' : 'times text--danger' }}"></i>
-                                        <a href="{{ route('admin.profile') }}">@lang('Setup profile information for Namecheap') </a>
+                                        <a href="{{ route('admin.profile') }}">@lang('Setup profile information') </a>
                                     </li>
                                 @endif
                             </ul>

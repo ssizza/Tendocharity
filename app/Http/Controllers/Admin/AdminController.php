@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
-use App\Lib\CurlRequest;
 use App\Models\AdminNotification;
 use App\Models\User;
 use App\Rules\FileTypeValidate;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -155,20 +153,9 @@ class AdminController extends Controller
     public function requestReport()
     {
         $pageTitle = 'Your Listed Report & Request';
-        $arr['app_name'] = systemDetails()['name'];
-        $arr['app_url'] = env('APP_URL');
-        $arr['purchase_code'] = env('PURCHASECODE');
-        $url = "https://license.viserlab.com/issue/get?" . http_build_query($arr);
-        $response = CurlRequest::curlContent($url);
-        $response = json_decode($response);
-        if (!$response || !@$response->status || !@$response->message) {
-            return to_route('admin.dashboard')->withErrors('Something went wrong');
-        }
-        if ($response->status == 'error') {
-            return to_route('admin.dashboard')->withErrors($response->message);
-        }
-        $reports = $response->message[0];
-        return view('admin.reports', compact('reports', 'pageTitle'));
+        // Removed license validation calls
+        $notify[] = ['info', 'This feature has been disabled.'];
+        return back()->withNotify($notify);
     }
 
     public function reportSubmit(Request $request)
@@ -177,22 +164,9 @@ class AdminController extends Controller
             'type' => 'required|in:bug,feature',
             'message' => 'required',
         ]);
-        $url = 'https://license.viserlab.com/issue/add';
-
-        $arr['app_name'] = systemDetails()['name'];
-        $arr['app_url'] = env('APP_URL');
-        $arr['purchase_code'] = env('PURCHASECODE');
-        $arr['req_type'] = $request->type;
-        $arr['message'] = $request->message;
-        $response = CurlRequest::curlPostContent($url, $arr);
-        $response = json_decode($response);
-        if (!$response || !@$response->status || !@$response->message) {
-            return to_route('admin.dashboard')->withErrors('Something went wrong');
-        }
-        if ($response->status == 'error') {
-            return back()->withErrors($response->message);
-        }
-        $notify[] = ['success', $response->message];
+        
+        
+        $notify[] = ['info', 'This feature has been disabled.'];
         return back()->withNotify($notify);
     }
 

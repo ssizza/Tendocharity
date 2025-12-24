@@ -88,8 +88,8 @@
         </div>
     @endpush
 @endif
-
-@push('script')
+{{--
+ @push('script')
     <script>
         (function ($) {
             "use strict";
@@ -110,3 +110,4 @@
         })(jQuery);
     </script>
 @endpush
+--}}

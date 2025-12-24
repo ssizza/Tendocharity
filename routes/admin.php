@@ -60,8 +60,6 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::get('read/automation/errors', 'readAutomationErrors')->name('read.automation.errors');
         Route::get('delete/automation/error/{id}', 'deleteAutomationError')->name('delete.automation.error');
 
-        Route::get('domains', 'domains')->name('domains');
-        Route::get('services', 'services')->name('services');
     });
 
     //Service
