@@ -45,24 +45,6 @@
                 </button>
             </li>
 
-            @permit('admin.domains')
-                <li>
-                    <button type="button" class="primary--layer" data-bs-toggle="tooltip" data-bs-placement="bottom" title="@lang('Domains')">
-                        <a href="{{ route('admin.domains') }}" class="primary--layer">
-                            <i class="las la-atlas"></i>
-                        </a>
-                    </button>
-                </li>
-            @endpermit
-            @permit('admin.services')
-                <li>
-                    <button type="button" class="primary--layer" data-bs-toggle="tooltip" data-bs-placement="bottom" title="@lang('Services')">
-                        <a href="{{ route('admin.services') }}" class="primary--layer">
-                            <i class="las la-server"></i>
-                        </a>
-                    </button>
-                </li>
-            @endpermit
             @permit('admin.notifications')
                 <li class="dropdown">
                     <button type="button" class="primary--layer notification-bell" data-bs-toggle="dropdown" data-display="static"
