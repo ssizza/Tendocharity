@@ -1,4 +1,4 @@
-@extends($activeTemplate .'layouts.app')
+@extends('layouts.app')
 
 @section('app')
     <div class="section maintenance-section bg--light section-full">

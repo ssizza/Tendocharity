@@ -20,13 +20,6 @@
         "icon": "las la-cogs",
         "route_name": "admin.setting.system.configuration"
     },
-    "coupons": {
-        "keyword": ["All Coupons", "Coupon", "Add New Coupon", "Update Coupon", "Discount"],
-        "title": "Coupon",
-        "subtitle": "Setup and manage coupn codes.",
-        "icon": "las la-ticket-alt",
-        "route_name": "admin.coupons"
-    },
     "automation_errors": {
         "keyword": ["Automation Errors", "All Automation Errors", "Automation", "Errors"],
         "title": "Automation Errors",
