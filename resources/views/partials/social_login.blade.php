@@ -5,7 +5,7 @@
 <div class="mb-3 continue-google">
     <a href="{{ route('user.social.login', 'google') }}" class="btn w-100 social-login-btn">
         <span class="google-icon">
-        <img src="{{ asset($activeTemplateTrue."images/google.svg") }}" alt="Google">
+        <img src="{{ asset('assets/images/google.svg') }}" alt="Google">
         </span> @lang("$text with Google")
     </a>
 </div>
@@ -14,7 +14,7 @@
 <div class="mb-3 continue-facebook">
     <a href="{{ route('user.social.login', 'facebook') }}" class="btn w-100 social-login-btn">
         <span class="facebook-icon">
-        <img src="{{ asset($activeTemplateTrue."images/facebook.svg") }}" alt="Facebook">
+        <img src="{{ asset('assets/images/facebook.svg') }}" alt="Facebook">
         </span> @lang("$text with Facebook")
     </a>
 </div>
@@ -23,7 +23,7 @@
 <div class="continue-facebook mb-3">
     <a href="{{ route('user.social.login', 'linkedin') }}" class="btn w-100 social-login-btn">
         <span class="facebook-icon">
-        <img src="{{ asset($activeTemplateTrue."images/linkdin.svg") }}" alt="Linkedin">
+        <img src="{{ asset('assets/images/linkdin.svg') }}" alt="Linkedin">
         </span> @lang("$text with Linkedin")
     </a>
 </div>

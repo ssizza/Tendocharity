@@ -1,4 +1,4 @@
-@extends($activeTemplate . 'layouts.master_side_bar')
+@extends('Template::layouts.master_side_bar')
 
 @section('content')
     <div class="col-lg-9">

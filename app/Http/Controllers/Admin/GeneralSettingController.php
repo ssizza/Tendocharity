@@ -170,7 +170,7 @@ class GeneralSettingController extends Controller
 
     public function customCss(){
         $pageTitle = 'Custom CSS';
-        $file = activeTemplate(true).'css/custom.css';
+        $file = resource_path('views/templates/'.activeTemplateName().'/css/custom.css');
         $fileContent = @file_get_contents($file);
         return view('admin.setting.custom_css',compact('pageTitle','fileContent'));
     }
@@ -213,7 +213,7 @@ class GeneralSettingController extends Controller
 
 
     public function customCssSubmit(Request $request){
-        $file = activeTemplate(true).'css/custom.css';
+        $file = resource_path('views/templates/'.activeTemplateName().'/css/custom.css');
         if (!file_exists($file)) {
             fopen($file, "w");
         }

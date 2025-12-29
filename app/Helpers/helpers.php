@@ -125,6 +125,24 @@ function showAmount($amount, $decimal = 2, $separate = true, $exceptZeros = fals
     return $printAmount;
 }
 
+
+function getPageSections($arr = false)
+{
+    $jsonUrl = resource_path('views/sections.json');
+
+    if (!file_exists($jsonUrl)) {
+        return $arr ? [] : null;
+    }
+
+    $sections = json_decode(file_get_contents($jsonUrl));
+    if ($arr) {
+        $sections = json_decode(file_get_contents($jsonUrl), true);
+        ksort($sections);
+    }
+    return $sections;
+}
+
+
 function removeElement($array, $value)
 {
     return array_diff($array, (is_array($value) ? $value : array($value)));
@@ -468,57 +486,6 @@ function isSuperAdmin()
     return auth('admin')->id() == 1 ? true : false;
 }
 
-function billingCycle($period = null, $showNextDate = false)
-{
-    try {
-        $array = [
-            0 => ['billing_cycle' => 'one_time', 'showText' => 'One Time', 'carbon' => null, 'index' => 0],
-            1 => ['billing_cycle' => 'monthly', 'carbon' => Carbon::now()->addMonth()->toDateTimeString(), 'showText' => 'Monthly', 'index' => 1],
-            2 => ['billing_cycle' => 'quarterly', 'carbon' => Carbon::now()->addMonth(3)->toDateTimeString(), 'showText' => 'Quarterly', 'index' => 2],
-            3 => ['billing_cycle' => 'semi_annually', 'carbon' => Carbon::now()->addMonth(6)->toDateTimeString(), 'showText' => 'Semi Annually', 'index' => 3],
-            4 => ['billing_cycle' => 'annually', 'carbon' => Carbon::now()->addYear()->toDateTimeString(), 'showText' => 'Annually', 'index' => 4],
-            5 => ['billing_cycle' => 'biennially', 'carbon' => Carbon::now()->addYear(2)->toDateTimeString(), 'showText' => 'Biennially', 'index' => 5],
-            6 => ['billing_cycle' => 'triennially', 'carbon' => Carbon::now()->addYear(3)->toDateTimeString(), 'showText' => 'Triennially', 'index' => 6]
-        ];
-
-        if (!is_numeric($period) && !$showNextDate) {
-            return $array;
-        }
-
-        foreach ($array as $index => $data) {
-            $type = $data['billing_cycle'];
-
-            if (is_numeric($period)) {
-                $type = $index;
-            }
-
-            if ($type == $period) {
-                if ($showNextDate) {
-                    return $data;
-                }
-                return $index;
-            }
-        }
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-}
-
-function welcomeEmail()
-{
-    try {
-        $array = [
-            1 => ['name' => 'Hosting Account Welcome Email', 'act' => 'HOSTING_ACCOUNT'],
-            2 => ['name' => 'Reseller Account Welcome Email', 'act' => 'RESELLER_ACCOUNT'],
-            3 => ['name' => 'Dedicated/VPS Server Welcome Email', 'act' => 'VPS_SERVER'],
-            4 => ['name' => 'Other Product/Service Welcome Email', 'act' => 'OTHER_PRODUCT'],
-        ];
-
-        return $array;
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-}
 
 function camelCaseToNormal($str)
 {
@@ -549,48 +516,8 @@ function getSld($domain)
     return explode('.', $domain)[0];
 }
 
-function productType()
-{
-    $array = [
-        1 => 'Shared Hosting',
-        2 => 'Reseller Hosting',
-        3 => 'Server/VPS',
-        4 => 'Other',
-    ];
 
-    return $array;
-}
 
-function productModule()
-{
-    try {
-        $array = [
-            0 => 'None',
-            1 => 'cPanel',
-            2 => 'Directadmin',
-            3 => 'Plesk',
-        ];
-
-        return $array;
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-}
-
-function productModuleOptions()
-{
-    try {
-        $array = [
-            1 => 'Automatically setup the product as soon as the first payment is received',
-            2 => 'Automatically setup the product when you manually accept a pending order',
-            3 => 'Do not automatically setup this product',
-        ];
-
-        return $array;
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-}
 
 function xmlToArray($xml)
 {

@@ -1,4 +1,4 @@
-@extends($activeTemplate.'layouts.auth')
+@extends('Template::layouts.auth')
 
 @section('auth')
 <form method="POST" action="{{ route('user.password.email') }}" class="account-form verify-gcaptcha">

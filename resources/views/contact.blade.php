@@ -94,7 +94,7 @@
 
     @if ($sections->secs != null)
         @foreach (json_decode($sections->secs) as $sec)
-            @include($activeTemplate . 'sections.' . $sec)
+            @include('Template::sections.' . $sec)
         @endforeach
     @endif
 @endsection

@@ -1,4 +1,4 @@
-@extends($activeTemplate .'layouts.frontend')
+@extends('Template::layouts.frontend')
 @section('content')
 <div class="pt-120 pb-120 bg--light">
     <div class="container">
@@ -12,7 +12,7 @@
                             @lang('A 6 digit verification code sent to your mobile number'):  +{{ showMobileNumber(auth()->user()->mobile) }}
                         </p>
       
-                        @include($activeTemplate.'partials.verification_code')
+                        @include('Template::partials.verification_code')
     
                         <div class="mb-3">
                             <button type="submit" class="btn btn--base w-100">@lang('Submit')</button>

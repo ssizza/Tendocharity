@@ -1,4 +1,4 @@
-@extends($activeTemplate .'layouts.frontend')
+@extends('Template::layouts.frontend')
 @section('content')
 <div class="pt-120 pb-120 bg--light">
     <div class="container">
@@ -9,7 +9,7 @@
                     <form action="{{route('user.2fa.verify')}}" method="POST" class="submit-form">
                         @csrf
       
-                        <div class="mt-3">@include($activeTemplate.'partials.verification_code')</div>
+                        <div class="mt-3">@include('Template::partials.verification_code')</div>
     
                         <div class="mb-3">
                             <button type="submit" class="btn btn--base w-100">@lang('Submit')</button>

@@ -1,4 +1,4 @@
-@extends($activeTemplate . 'layouts.auth')
+@extends('Template::layouts.auth')
 
 @php
     $policyPages = getContent('policy_pages.element', false, orderById: true);
@@ -33,7 +33,7 @@
             </p>
         @endif
 
-        @include($activeTemplate . 'partials.social_login')
+        @include('Template::partials.social_login')
 
         <div class="mb-4 text-center">
             <h4 class="mb-2">@lang('Create an Account')</h4>

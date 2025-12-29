@@ -1,4 +1,4 @@
-@extends($activeTemplate . 'layouts.side_bar')
+@extends('Template::layouts.side_bar')
 
 @php 
     $getResponse = collect(@$result['data']);
@@ -12,7 +12,7 @@
                 <p class="mt-2">@lang('Find your new domain name. Enter your desired domain name or keyword below to check availability')...</p>
             </div>
             <div class="col-lg-12 text-center">
-                @include($activeTemplate . 'partials.domain_search_form')
+                @include('Template::partials.domain_search_form')
             </div>
 
             <div class="col-lg-12 text-center">
