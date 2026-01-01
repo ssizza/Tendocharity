@@ -7,6 +7,73 @@
             "subheading": "text"
         }
     },
+    "hero_1": {
+        "builder": true,
+        "name": "Hero Section 1 (TNTCEO Style)",
+        "content": {
+            "organization_name": "text",
+            "tagline": "text",
+            "description": "textarea",
+            "button1_text": "text",
+            "button1_link": "text",
+            "button2_text": "text",
+            "button2_link": "text",
+            "image_position": {
+                "type": "select",
+                "options": ["left", "right"]
+            },
+            "has_background_image": "checkbox",
+            "has_foreground_image": "checkbox",
+            "images": {
+                "background_image": {
+                    "size": "1920x800"
+                },
+                "foreground_image": {
+                    "size": "600x400"
+                }
+            }
+        }
+    },
+    "hero_2": {
+        "builder": true,
+        "name": "Hero Section 2 (PawBuddiz Style)",
+        "content": {
+            "title": "text",
+            "subtitle": "text",
+            "description": "textarea",
+            "emergency_tag": "text",
+            "button_text": "text",
+            "button_link": "text",
+            "background_color": "color",
+            "has_hero_image": "checkbox",
+            "images": {
+                "hero_image": {
+                    "size": "800x600"
+                }
+            }
+        }
+    },
+    "hero_3": {
+        "builder": true,
+        "name": "Hero Section 3 (Hannah Foundation Style)",
+        "content": {
+            "foundation_name": "text",
+            "tagline": "text",
+            "description": "textarea",
+            "button1_text": "text",
+            "button1_link": "text",
+            "button2_text": "text",
+            "button2_link": "text",
+            "highlight_text": "text",
+            "highlight_date": "text",
+            "has_background_image": "checkbox",
+            "images": {
+                "background_image": {
+                    "size": "1920x800"
+                }
+            }
+        }
+    },
     "domain": {
         "builder": true,
         "name": "Domain Section",
