@@ -107,5 +107,68 @@
                 }
             }
         }
+    },
+    "support_us": {
+        "builder": true,
+        "name": "Support Us Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "button1_text": "text",
+            "button1_link": "text",
+            "button2_text": "text",
+            "button2_link": "text",
+            "images": {
+                "background_image": {
+                    "size": "1920x600"
+                }
+            }
+        }
+    },
+    "join_us": {
+        "builder": true,
+        "name": "Join Us Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "button_text": "text",
+            "button_link": "text",
+            "features": {
+                "type": "array",
+                "label": "Feature",
+                "placeholder": "Enter a feature"
+            },
+            "images": {
+                "image": {
+                    "size": "800x600"
+                }
+            }
+        }
+    },
+    "become_member": {
+        "builder": true,
+        "name": "Become Member Section",
+        "content": {
+            "heading": "text",
+            "sub_heading": "text",
+            "note": "textarea",
+            "memberships": {
+                "type": "array-object",
+                "fields": {
+                    "name": "text",
+                    "price": "text",
+                    "currency": "text",
+                    "period": "text",
+                    "button_text": "text",
+                    "button_link": "text",
+                    "featured": "checkbox",
+                    "features": {
+                        "type": "array",
+                        "label": "Feature",
+                        "placeholder": "Enter a feature"
+                    }
+                }
+            }
+        }
     }
 }

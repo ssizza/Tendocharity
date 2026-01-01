@@ -8,72 +8,85 @@
                     </a>
                 </div>
                 <ul class="menu">
+                    <!-- Home -->
                     <li>
-                        <a href="{{ route('home') }}">@lang('Home')</a>
+                        <a href="{{ route('home') }}">@lang('HOME')</a>
                     </li>
                     
-                    <!-- Store dropdown temporarily disabled -->
-                    <!-- 
+                    <!-- Who We Are Dropdown -->
                     <li>
-                        <a href="#0">@lang('Store')</a>
+                        <a href="#0">@lang('WHO WE ARE') <span class="dropdown-indicator">~</span></a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{ route('register.domain') }}">@lang('Register New Domain')</a>
+                                <a href="{{ route('pages', ['about-us']) }}">@lang('About Us')</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pages', ['our-story']) }}">@lang('Our Story')</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pages', ['gallery']) }}">@lang('Our Gallery')</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pages', ['team']) }}">@lang('Our Team')</a>
                             </li>
                         </ul>
                     </li>
-                    -->
                     
-                    <!-- Simple Store link without dropdown -->
+                    <!-- Resources Dropdown -->
                     <li>
-                        <a href="{{ route('register.domain') }}">@lang('Domain Register')</a>
-                    </li>
-
-                    @php
-                        $pages = App\Models\Page::where('is_default', 0)->get();
-                    @endphp
-
-                    @foreach ($pages as $k => $data)
-                        <li>
-                            <a href="{{ route('pages', [$data->slug]) }}">{{ __($data->name) }}</a>
-                        </li>
-                    @endforeach
-
-                    <li>
-                        <a href="{{ route('blogs') }}">@lang('Announcements')</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('contact') }}">@lang('Contact')</a>
-                    </li>
-
-                    @auth
-                        <div class="header-buttons d-flex flex-wrap ms-xl-4 ms-0">
-                            <li class="menu-btn">
-                                <a href="{{ route('user.home') }}" class="text--white ps-2 d-inline-block"> 
-                                    <i class="las la-home"></i> @lang('Dashboard')
-                                </a>
+                        <a href="#0">@lang('RESOURCES') <span class="dropdown-indicator">~</span></a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{ route('pages', ['get-help']) }}">@lang('Get Help')</a>
                             </li>
-                            <li class="menu-btn ms-xl-2">
-                                <a href="{{ route('user.logout') }}" class="btn--base-outline me-xl-2 ms-xl-0 ms-2 ps-2 d-inline-block"> 
-                                    <i class="las la-sign-out-alt"></i> @lang('Logout')
-                                </a>
+                            <li>
+                                <a href="{{ route('pages', ['events']) }}">@lang('Events')</a>
                             </li>
-                        </div>
-                    @else
-                        <li class="menu-btn">
-                            <a href="{{ route('user.login') }}" class="text--white ps-2 d-inline-block"> 
-                                <i class="las la-sign-in-alt"></i> @lang('Login')
-                            </a>
-                        </li>
-                    @endauth
+                            <li>
+                                <a href="{{ route('pages', ['newsletter']) }}">@lang('Newsletter')</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pages', ['faq']) }}">@lang('FAQ')</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Our Work -->
+                    <li>
+                        <a href="{{ route('pages', ['our-work']) }}">@lang('OUR WORK')</a>
+                    </li>
+                    
+                    <!-- Blog -->
+                    <li>
+                        <a href="{{ route('blogs') }}">@lang('BLOG')</a>
+                    </li>
+                    
+                    <!-- Events -->
+                    <li>
+                        <a href="{{ route('pages', ['events']) }}">@lang('EVENTS')</a>
+                    </li>
+                    
+                    <!-- Contact Us -->
+                    <li>
+                        <a href="{{ route('contact') }}">@lang('CONTACT US')</a>
+                    </li>
+                    
+                    <!-- Donate Button - Using simple href for now -->
+                    <li class="menu-btn ms-xl-2">
+                        <a href="#donate" class="btn--base ps-2 d-inline-block donate-btn"> 
+                            <span>@lang('DONATE')</span>
+                            <i class="las la-arrow-right"></i>
+                        </a>
+                    </li>
 
                 </ul>
+                
+                <!-- Right side elements - Language selector only -->
                 <div class="d-flex align-items-center ms-xl-2 ms-auto me-xl-0 me-2">
-                    <!-- Cart widget placeholder -->
-                    <div class="cart-widget-placeholder"></div>
-                    
                     <x-language />
                 </div>
+                
+                <!-- Mobile menu trigger -->
                 <div class="header-trigger-wrapper d-flex d-xl-none align-items-center">
                     <div class="header-trigger">
                         <div class="header-trigger__icon"> <i class="las la-bars"></i></div>
@@ -83,3 +96,48 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Additional styles for the donate button */
+.donate-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 20px !important;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.donate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure proper spacing for the donate button */
+.menu .menu-btn.ms-xl-2 {
+    margin-left: 15px;
+}
+
+/* Style for dropdown indicators */
+.dropdown-indicator {
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+/* Make all nav items uppercase */
+.menu > li > a {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Mobile responsiveness adjustments */
+@media (max-width: 1199px) {
+    .donate-btn {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
