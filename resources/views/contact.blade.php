@@ -10,42 +10,6 @@
 
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <div class="pb-60">
-                        <div class="row gy-3 justify-content-center">
-                            <div class="col-md-4 col-sm-6 col-xsm-6">
-                                <div class="contact-card">
-                                    <div class="contact-card__icon"><i class="las la-envelope"></i> </div>
-                                    <div class="contact-card__content">
-                                        <h5 class="contact-card__title">@lang('Email')</h5>
-                                        <p class="contact-card__desc">{{ @$contact->data_values->email }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6 col-xsm-6">
-                                <div class="contact-card">
-                                    <div class="contact-card__icon"><i class="las la-phone"></i> </div>
-                                    <div class="contact-card__content">
-                                        <h5 class="contact-card__title">@lang('Phone')</h5>
-                                        <p class="contact-card__desc">{{ @$contact->data_values->phone }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6 col-xsm-6">
-                                <div class="contact-card">
-                                    <div class="contact-card__icon"><i class="las la-map-marker"></i> </div>
-                                    <div class="contact-card__content">
-                                        <h5 class="contact-card__title">@lang('Address')</h5>
-                                        <p class="contact-card__desc">{{ __(@$contact->data_values->address) }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
                     <div class="contact-form card custom--card border-0">
                         <div class="card-body">
                             <h3 class="title mb-2">{{ __(@$contact->data_values->heading) }}</h3>
@@ -94,7 +58,7 @@
 
     @if ($sections->secs != null)
         @foreach (json_decode($sections->secs) as $sec)
-            @include('Template::sections.' . $sec)
+            @include('sections.' . $sec)
         @endforeach
     @endif
 @endsection

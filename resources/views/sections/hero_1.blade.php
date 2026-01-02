@@ -4,10 +4,10 @@
 
 @if($hero1)
 <section class="hero-section hero-style-1 section-full d-flex align-items-center" 
-         @if(isset($hero1->data_values->has_background_image) && $hero1->data_values->has_background_image == 1 && isset($hero1->data_values->background_image))
-         style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ getImage('assets/images/frontend/hero_1/' . $hero1->data_values->background_image, '1920x800') }}') no-repeat center center/cover; min-height: 80vh; padding: 100px 0;"
+         @if(isset($hero1->data_values->background_image))
+         style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ getImage('assets/images/frontend/hero_1/' . $hero1->data_values->background_image, '1920x800') }}') no-repeat center center/cover;"
          @else
-         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 80vh; padding: 100px 0;"
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
          @endif>
     <div class="container">
         <div class="row align-items-center @if(isset($hero1->data_values->image_position) && $hero1->data_values->image_position == 'right') flex-row-reverse @endif">
@@ -44,7 +44,7 @@
                 </div>
             </div>
             
-            @if(isset($hero1->data_values->has_foreground_image) && $hero1->data_values->has_foreground_image == 1 && isset($hero1->data_values->foreground_image))
+            @if(isset($hero1->data_values->foreground_image))
             <div class="col-lg-6">
                 <div class="hero-image-wrapper">
                     <img src="{{ getImage('assets/images/frontend/hero_1/' . $hero1->data_values->foreground_image, '600x400') }}" 
@@ -58,30 +58,40 @@
 </section>
 
 <style>
-.hero-style-1 .hero-organization-name {
+.hero-section {
+    min-height: 80vh;
+    padding: 100px 0;
+}
+
+.hero-organization-name {
     font-size: 3.5rem;
     line-height: 1.1;
     letter-spacing: -0.5px;
 }
 
-.hero-style-1 .hero-tagline {
+.hero-tagline {
     color: #4facfe !important;
     font-weight: 300;
     font-style: italic;
 }
 
-.hero-style-1 .hero-description {
+.hero-description {
     font-size: 1.25rem;
     line-height: 1.8;
     max-width: 600px;
 }
 
 @media (max-width: 768px) {
-    .hero-style-1 .hero-organization-name {
+    .hero-section {
+        min-height: auto;
+        padding: 60px 0;
+    }
+    
+    .hero-organization-name {
         font-size: 2.5rem;
     }
     
-    .hero-style-1 .hero-description {
+    .hero-description {
         font-size: 1.1rem;
     }
 }

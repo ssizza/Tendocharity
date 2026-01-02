@@ -5,9 +5,9 @@
 @if($hero2)
 <section class="hero-section hero-style-2 section-full d-flex align-items-center" 
          @if(isset($hero2->data_values->background_color)) 
-         style="background-color: {{ $hero2->data_values->background_color }}; min-height: 80vh; padding: 100px 0;"
+         style="background-color: {{ $hero2->data_values->background_color }};"
          @else
-         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 80vh; padding: 100px 0;"
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
          @endif>
     <div class="container">
         <div class="row align-items-center">
@@ -47,10 +47,10 @@
                 </div>
             </div>
             
-            @if(isset($hero2->data_values->has_hero_image) && $hero2->data_values->has_hero_image == 1 && isset($hero2->data_values->hero_image))
+            @if(isset($hero2->data_values->hero_image))
             <div class="col-lg-6 mt-5 mt-lg-0">
                 <div class="hero-image-wrapper">
-                    <img src="{{ getImage('assets/images/frontend/hero/' . $hero2->data_values->hero_image, '800x600') }}" 
+                    <img src="{{ getImage('assets/images/frontend/hero_2/' . $hero2->data_values->hero_image, '800x600') }}" 
                          alt="{{ __($hero2->data_values->title ?? 'Hero Image') }}" 
                          class="img-fluid rounded-3 shadow-lg">
                 </div>
@@ -61,36 +61,46 @@
 </section>
 
 <style>
-.hero-style-2 .hero-title {
+.hero-section {
+    min-height: 80vh;
+    padding: 100px 0;
+}
+
+.hero-title {
     font-size: 3.5rem;
     line-height: 1.1;
     text-transform: uppercase;
 }
 
-.hero-style-2 .hero-subtitle {
+.hero-subtitle {
     font-weight: 300;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
-.hero-style-2 .emergency-tag .badge {
+.emergency-tag .badge {
     font-size: 1rem;
     padding: 8px 20px;
     border-radius: 50px;
 }
 
-.hero-style-2 .hero-description {
+.hero-description {
     font-size: 1.25rem;
     line-height: 1.8;
     max-width: 500px;
 }
 
 @media (max-width: 768px) {
-    .hero-style-2 .hero-title {
+    .hero-section {
+        min-height: auto;
+        padding: 60px 0;
+    }
+    
+    .hero-title {
         font-size: 2.5rem;
     }
     
-    .hero-style-2 .hero-subtitle {
+    .hero-subtitle {
         font-size: 1.5rem;
     }
 }

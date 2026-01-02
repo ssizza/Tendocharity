@@ -7,6 +7,34 @@
             "subheading": "text"
         }
     },
+     "help": {
+        "builder": true,
+        "name": "Get Help Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea"
+        }
+    },
+        "about_us": {
+        "builder": true,
+        "name": "About Us Section",
+        "content": {
+            "heading": "text",
+            "subheading": "text",
+            "description": "textarea",
+            "button_text": "text",
+            "button_link": "text",
+            "image_alignment": {
+                "type": "select",
+                "options": ["left", "right"]
+            },
+            "images": {
+                "image": {
+                    "size": "800x600"
+                }
+            }
+        }
+    },
     "hero_1": {
         "builder": true,
         "name": "Hero Section 1 (TNTCEO Style)",

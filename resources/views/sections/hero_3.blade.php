@@ -4,10 +4,10 @@
 
 @if($hero3)
 <section class="hero-section hero-style-3 section-full d-flex align-items-center" 
-         @if(isset($hero3->data_values->has_background_image) && $hero3->data_values->has_background_image == 1 && isset($hero3->data_values->background_image))
-         style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ getImage('assets/images/frontend/hero/' . $hero3->data_values->background_image, '1920x800') }}') no-repeat center center/cover; min-height: 90vh; padding: 120px 0;"
+         @if(isset($hero3->data_values->background_image))
+         style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ getImage('assets/images/frontend/hero_3/' . $hero3->data_values->background_image, '1920x800') }}') no-repeat center center/cover;"
          @else
-         style="background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%); min-height: 90vh; padding: 120px 0;"
+         style="background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);"
          @endif>
     <div class="container">
         <div class="row justify-content-center">
@@ -58,47 +58,58 @@
                 </div>
             </div>
         </div>
+</div>
     </div>
 </section>
 
 <style>
-.hero-style-3 .hero-foundation-name {
+.hero-section {
+    min-height: 90vh;
+    padding: 120px 0;
+}
+
+.hero-foundation-name {
     font-size: 4rem;
     line-height: 1.1;
     letter-spacing: -1px;
 }
 
-.hero-style-3 .hero-tagline {
+.hero-tagline {
     font-weight: 300;
     color: #ffd700 !important;
 }
 
-.hero-style-3 .hero-description {
+.hero-description {
     font-size: 1.3rem;
     line-height: 1.8;
 }
 
-.hero-style-3 .hero-highlight {
+.hero-highlight {
     padding-top: 40px;
     margin-top: 40px;
 }
 
-.hero-style-3 .highlight-date {
+.highlight-date {
     color: #ffd700;
     font-weight: 600;
 }
 
 @media (max-width: 768px) {
-    .hero-style-3 .hero-foundation-name {
+    .hero-section {
+        min-height: auto;
+        padding: 80px 0;
+    }
+    
+    .hero-foundation-name {
         font-size: 2.8rem;
     }
     
-    .hero-style-3 .hero-tagline {
+    .hero-tagline {
         font-size: 1.8rem;
         letter-spacing: 1px;
     }
     
-    .hero-style-3 .hero-description {
+    .hero-description {
         font-size: 1.1rem;
     }
 }

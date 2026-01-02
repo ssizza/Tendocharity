@@ -1,11 +1,11 @@
-@extends('Template::layouts.frontend')
+@extends('layouts.frontend')
 
 @section('content')
 
 
     @if($sections != null)
         @foreach(json_decode($sections) as $sec)
-            @include('Template::sections.' . $sec)
+            @include('sections.' . $sec)
         @endforeach
     @endif
 @endsection
