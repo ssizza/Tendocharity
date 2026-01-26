@@ -76,7 +76,7 @@
 
 <style>
 .min-vh-50 {
-    min-height: 50vh;
+    min-height: 30vh;
 }
 
 .tracking-wider {

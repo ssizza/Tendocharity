@@ -1,4 +1,4 @@
-@extends('Template::layouts.frontend')
+@extends('layouts.frontend')
 
 @section('content')
     <div class="contact-section pt-60 pb-60 bg--light section-full">

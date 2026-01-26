@@ -60,13 +60,12 @@ class FrontendController extends Controller
     }
 
 
-
     public function frontendSections($key)
     {
         $section = @getPageSections()->$key;
         abort_if(!$section || !$section->builder,404);
-        $content = Frontend::where('data_keys', $key . '.content')->where('tempname')->orderBy('id','desc')->first();
-        $elements = Frontend::where('data_keys', $key . '.element')->where('tempname')->orderBy('id','desc')->get();
+        $content = Frontend::where('data_keys', $key . '.content')->whereNull('tempname')->orderBy('id','desc')->first();
+        $elements = Frontend::where('data_keys', $key . '.element')->whereNull('tempname')->orderBy('id','desc')->get();
         $pageTitle = $section->name ;
         return view('admin.frontend.section', compact('section', 'content', 'elements', 'key', 'pageTitle'));
     }
@@ -74,135 +73,131 @@ class FrontendController extends Controller
 
 
 
-  public function frontendContent(Request $request, $key)
-{
-    $purifier = new \HTMLPurifier();
-    $valInputs = $request->except('_token', 'image_input', 'key', 'status', 'type', 'id', 'slug');
-    
-    foreach ($valInputs as $keyName => $input) {
-        if (gettype($input) == 'array') {
-            $inputContentValue[$keyName] = $input;
-            continue;
-        }
-        $inputContentValue[$keyName] = htmlspecialchars_decode($purifier->purify($input));
-    }
-    
-    $type = $request->type;
-    if (!$type) {
-        abort(404);
-    }
-    
-    // Get sections without template dependency
-    $sections = getPageSections(true); // Get as associative array
-    
-    // Check if the section exists
-    $imgJson = null;
-    if (isset($sections[$key][$type]['images'])) {
-        $imgJson = $sections[$key][$type]['images'];
-    }
-    
-    $validationRule = [];
-    $validationMessage = [];
-    
-    foreach ($request->except('_token', 'video') as $inputField => $val) {
-        if ($inputField == 'has_image' && $imgJson) {
-            foreach ($imgJson as $imgValKey => $imgJsonVal) {
-                $validationRule['image_input.'.$imgValKey] = ['nullable','image',new FileTypeValidate(['jpg','jpeg','png'])];
-                $validationMessage['image_input.'.$imgValKey.'.image'] = keyToTitle($imgValKey).' must be an image';
-                $validationMessage['image_input.'.$imgValKey.'.mimes'] = keyToTitle($imgValKey).' file type not supported';
+    public function frontendContent(Request $request, $key)
+    {
+        $purifier = new \HTMLPurifier();
+        $valInputs = $request->except('_token', 'image_input', 'key', 'status', 'type', 'id', 'slug');
+        
+        foreach ($valInputs as $keyName => $input) {
+            if (gettype($input) == 'array') {
+                $inputContentValue[$keyName] = $input;
+                continue;
             }
-            continue;
-        } elseif($inputField == 'seo_image') {
-            $validationRule['image_input'] = ['nullable', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
-            continue;
+            $inputContentValue[$keyName] = htmlspecialchars_decode($purifier->purify($input));
         }
         
-        if($inputField == 'meta_robots') continue;
-        
-        $validationRule[$inputField] = ['required'];
-        
-        if ($inputField == 'slug') {
-            $validationRule[$inputField] = [Rule::unique('frontends')->where(function ($query) use ($request) {
-                return $query->where('id', '!=', $request->id);
-                // Removed template condition
-            })];
+        $type = $request->type;
+        if (!$type) {
+            abort(404);
         }
-    }
-    
-    $request->validate($validationRule, $validationMessage, ['image_input' => 'image']);
-    
-    if ($request->id) {
-        $content = Frontend::findOrFail($request->id);
-    } else {
-        $content = Frontend::where('data_keys', $key . '.' . $request->type)->first();
         
-        if (!$content || $request->type == 'element') {
-            $content = new Frontend();
-            $content->data_keys = $key . '.' . $request->type;
-            $content->save();
+        // Get sections without template dependency
+        $sections = getPageSections(true); // Get as associative array
+        
+        // Check if the section exists
+        $imgJson = null;
+        if (isset($sections[$key][$type]['images'])) {
+            $imgJson = $sections[$key][$type]['images'];
         }
-    }
-    
-    if ($type == 'data') {
-        $inputContentValue['image'] = @$content->data_values->image;
-        if ($request->hasFile('image_input')) {
-            try {
-                $inputContentValue['image'] = fileUploader($request->image_input, getFilePath('seo'), getFileSize('seo'), @$content->data_values->image);
-            } catch (\Exception $exp) {
-                $notify[] = ['error', 'Couldn\'t upload the image'];
-                return back()->withNotify($notify);
+        
+        $validationRule = [];
+        $validationMessage = [];
+        
+        foreach ($request->except('_token', 'video') as $inputField => $val) {
+            if ($inputField == 'has_image' && $imgJson) {
+                foreach ($imgJson as $imgValKey => $imgJsonVal) {
+                    $validationRule['image_input.'.$imgValKey] = ['nullable','image',new FileTypeValidate(['jpg','jpeg','png'])];
+                    $validationMessage['image_input.'.$imgValKey.'.image'] = keyToTitle($imgValKey).' must be an image';
+                    $validationMessage['image_input.'.$imgValKey.'.mimes'] = keyToTitle($imgValKey).' file type not supported';
+                }
+                continue;
+            } elseif($inputField == 'seo_image') {
+                $validationRule['image_input'] = ['nullable', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
+                continue;
+            }
+            
+            if($inputField == 'meta_robots') continue;
+            
+            $validationRule[$inputField] = ['required'];
+            
+            if ($inputField == 'slug') {
+                $validationRule[$inputField] = [Rule::unique('frontends')->where(function ($query) use ($request) {
+                    return $query->where('id', '!=', $request->id);
+                })];
             }
         }
-    } else {
-        if ($imgJson) {
-            foreach ($imgJson as $imgKey => $imgValue) {
-                $imgData = $request->image_input && array_key_exists($imgKey, $request->image_input) ? $request->image_input[$imgKey] : null;
-                $oldImage = isset($content?->data_values?->$imgKey) && $content?->data_values?->$imgKey ? $content?->data_values?->$imgKey : null;
-                
-                if (is_file($imgData)) {
-                    try {
-                        $inputContentValue[$imgKey] = $this->storeImage($imgJson, $type, $key, $imgData, $imgKey, $oldImage);
-                    } catch (\Exception $exp) {
-                        $notify[] = ['error', 'Couldn\'t upload the image'];
-                        return back()->withNotify($notify);
+        
+        $request->validate($validationRule, $validationMessage, ['image_input' => 'image']);
+        
+        if ($request->id) {
+            $content = Frontend::findOrFail($request->id);
+        } else {
+            $content = Frontend::where('data_keys', $key . '.' . $request->type)->whereNull('tempname')->first();
+            
+            if (!$content || $request->type == 'element') {
+                $content = new Frontend();
+                $content->data_keys = $key . '.' . $request->type;
+                $content->tempname = null; // Explicitly set to null
+                $content->save();
+            }
+        }
+        
+        if ($type == 'data') {
+            $inputContentValue['image'] = @$content->data_values->image;
+            if ($request->hasFile('image_input')) {
+                try {
+                    $inputContentValue['image'] = fileUploader($request->image_input, getFilePath('seo'), getFileSize('seo'), @$content->data_values->image);
+                } catch (\Exception $exp) {
+                    $notify[] = ['error', 'Couldn\'t upload the image'];
+                    return back()->withNotify($notify);
+                }
+            }
+        } else {
+            if ($imgJson) {
+                foreach ($imgJson as $imgKey => $imgValue) {
+                    $imgData = $request->image_input && array_key_exists($imgKey, $request->image_input) ? $request->image_input[$imgKey] : null;
+                    $oldImage = isset($content?->data_values?->$imgKey) && $content?->data_values?->$imgKey ? $content?->data_values?->$imgKey : null;
+                    
+                    if (is_file($imgData)) {
+                        try {
+                            $inputContentValue[$imgKey] = $this->storeImage($imgJson, $type, $key, $imgData, $imgKey, $oldImage);
+                        } catch (\Exception $exp) {
+                            $notify[] = ['error', 'Couldn\'t upload the image'];
+                            return back()->withNotify($notify);
+                        }
+                    } else if (isset($content->data_values->$imgKey)) {
+                        $inputContentValue[$imgKey] = $oldImage;
                     }
-                } else if (isset($content->data_values->$imgKey)) {
-                    $inputContentValue[$imgKey] = $oldImage;
                 }
             }
         }
-    }
-    
-    $content->data_values = $inputContentValue;
-    $content->slug = slug($request->slug);
-    
-    // Removed template assignment
-    // $content->tempname = activeTemplateName(); // This line removed
-    
-    $content->save();
-    
-    // Check if SEO should be configured
-    if (!$request->id && isset($sections[$key]['element']['seo']) && $sections[$key]['element']['seo'] && $type != 'content') {
-        $notify[] = ['info','Configure SEO content for ranking'];
+        
+        $content->data_values = $inputContentValue;
+        $content->slug = slug($request->slug);
+        $content->tempname = null; // Always set to null
+        $content->save();
+        
+        // Check if SEO should be configured
+        if (!$request->id && isset($sections[$key]['element']['seo']) && $sections[$key]['element']['seo'] && $type != 'content') {
+            $notify[] = ['info','Configure SEO content for ranking'];
+            $notify[] = ['success', 'Content updated successfully'];
+            return to_route('admin.frontend.sections.element.seo',[$key,$content->id])->withNotify($notify);
+        }
+        
+        if ($request->seo_image) {
+            RequiredConfig::configured('seo');
+        }
+        
+        if ($content->data_keys == 'policy_pages.element') {
+            RequiredConfig::configured('policy_content');
+        }
+        
         $notify[] = ['success', 'Content updated successfully'];
-        return to_route('admin.frontend.sections.element.seo',[$key,$content->id])->withNotify($notify);
+        return back()->withNotify($notify);
     }
-    
-    if ($request->seo_image) {
-        RequiredConfig::configured('seo');
-    }
-    
-    if ($content->data_keys == 'policy_pages.element') {
-        RequiredConfig::configured('policy_content');
-    }
-    
-    $notify[] = ['success', 'Content updated successfully'];
-    return back()->withNotify($notify);
-}
 
 
-
-    public function frontendElement($key, $id = null)
+   public function frontendElement($key, $id = null)
     {
         $section = @getPageSections()->$key;
         if (!$section) {
@@ -213,7 +208,7 @@ class FrontendController extends Controller
         unset($section->element->seo);
         $pageTitle = $section->name . ' Items';
         if ($id) {
-            $data = Frontend::where('tempname',activeTemplateName())->findOrFail($id);
+            $data = Frontend::whereNull('tempname')->findOrFail($id);
             return view('admin.frontend.element', compact('section', 'key', 'pageTitle', 'data'));
         }
         return view('admin.frontend.element', compact('section', 'key', 'pageTitle'));
@@ -221,7 +216,7 @@ class FrontendController extends Controller
 
 
     public function frontendElementSlugCheck($key,$id = null){
-        $content = Frontend::where('data_keys', $key . '.element')->where('tempname', activeTemplateName())->where('slug',request()->slug);
+        $content = Frontend::where('data_keys', $key . '.element')->whereNull('tempname')->where('slug',request()->slug);
         if ($id) {
             $content = $content->where('id','!=',$id);
         }

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Constants\Status;
 use App\DomainRegisters\Register;
 use App\Models\AdminNotification;
-use App\Models\DomainRegister;
-use App\Models\DomainSetup;
 use App\Models\Frontend;
 use App\Models\Language;
 use App\Models\Subscriber;
@@ -15,10 +13,14 @@ use App\Models\Product;
 use App\Models\ServiceCategory;
 use App\Models\SupportMessage;
 use App\Models\SupportTicket;
+use App\Models\Event;
+use App\Models\EventApplicant;
+use App\Models\EventGallery;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -40,7 +42,13 @@ class SiteController extends Controller
             $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
         }
         
-        return view('home', compact('pageTitle', 'sections', 'seoContents', 'seoImage'));
+        // Get featured events for homepage
+        $featuredEvents = Event::where('status', 'upcoming')
+            ->orderBy('startDate', 'asc')
+            ->take(3)
+            ->get();
+        
+        return view('home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'featuredEvents'));
     }
 
     public function pages($slug)
@@ -120,6 +128,176 @@ class SiteController extends Controller
         $notify[] = ['success', 'Ticket created successfully!'];
 
         return to_route('ticket.view', [$ticket->ticket])->withNotify($notify);
+    }
+
+    // Events Methods
+  // Events Methods
+public function events()
+{
+    $pageTitle = 'Events';
+    
+    // Try to get events page from Pages table
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    // Get events
+    $events = Event::whereIn('status', ['upcoming', 'ongoing'])
+        ->orderBy('startDate', 'asc')
+        ->paginate(12);
+    
+    $ongoingEvents = collect([]);
+    if ($events->count() > 0) {
+        $ongoingEvents = Event::where('status', 'ongoing')
+            ->where('startDate', '<=', Carbon::now())
+            ->where('endDate', '>=', Carbon::now())
+            ->orderBy('startDate', 'asc')
+            ->take(3)
+            ->get();
+    }
+        
+    $upcomingEvents = collect([]);
+    if ($events->count() > 0) {
+        $upcomingEvents = Event::where('status', 'upcoming')
+            ->where('startDate', '>', Carbon::now())
+            ->orderBy('startDate', 'asc')
+            ->take(3)
+            ->get();
+    }
+    
+    return view('events', compact(
+        'pageTitle', 
+        'sections', 
+        'seoContents', 
+        'seoImage', 
+        'events', 
+        'upcomingEvents', 
+        'ongoingEvents'
+    ));
+}
+
+    public function eventDetails($id, $slug = null)
+    {
+        $event = Event::findOrFail($id);
+        $pageTitle = $event->title;
+        
+        $seoContents = null;
+        $seoImage = null;
+        
+        // If the event has a custom SEO content, use it
+        if (isset(json_decode($event->description)->seo_content)) {
+            $seoContents = json_decode($event->description)->seo_content;
+            if (isset($seoContents->image) && $seoContents->image) {
+                $seoImage = getImage(getFilePath('seo') . '/' . $seoContents->image, getFileSize('seo'));
+            }
+        }
+        
+        $gallery = EventGallery::where('eventId', $id)->get();
+        $applicantsCount = EventApplicant::where('eventId', $id)->count();
+        
+        // Check if event is open for booking
+        $isOpenForBooking = $event->status === 'upcoming' && $event->startDate > Carbon::now();
+        
+        // Get related events
+        $relatedEvents = Event::where('id', '!=', $id)
+            ->where('status', 'upcoming')
+            ->orderBy('startDate', 'asc')
+            ->limit(3)
+            ->get();
+        
+        return view('event_details', compact(
+            'pageTitle', 
+            'event', 
+            'seoContents', 
+            'seoImage', 
+            'gallery', 
+            'applicantsCount', 
+            'isOpenForBooking',
+            'relatedEvents'
+        ));
+    }
+
+    public function eventBookSubmit(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        
+        // Check if event is open for booking
+        if (!$event->isOpenForBooking()) {
+            $notify[] = ['error', 'This event is not open for booking.'];
+            return back()->withNotify($notify);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Check if already applied with this email
+        $existingApplication = EventApplicant::where('eventId', $id)
+            ->where('email', $request->email)
+            ->first();
+
+        if ($existingApplication) {
+            $notify[] = ['info', 'You have already applied for this event with this email address.'];
+            return back()->withNotify($notify);
+        }
+
+        // Create application
+        $application = new EventApplicant();
+        $application->eventId = $id;
+        $application->name = $request->name;
+        $application->email = $request->email;
+        $application->phone = $request->phone;
+        $application->save();
+
+        // Create admin notification
+        $adminNotification = new AdminNotification();
+        $adminNotification->user_id = auth()->user() ? auth()->user()->id : 0;
+        $adminNotification->title = 'New event registration: ' . $event->title;
+        $adminNotification->click_url = urlPath('admin.event.applicants', $id);
+        $adminNotification->save();
+
+        $notify[] = ['success', 'Your registration has been submitted successfully!'];
+        return back()->withNotify($notify);
+    }
+
+    public function eventAddToCalendar($id)
+    {
+        $event = Event::findOrFail($id);
+        
+        // Format dates for Google Calendar
+        $startDate = Carbon::parse($event->startDate)->format('Ymd\THis\Z');
+        $endDate = Carbon::parse($event->endDate)->format('Ymd\THis\Z');
+        
+        // Get event description
+        $description = '';
+        if ($event->description) {
+            $descData = json_decode($event->description);
+            if (isset($descData->short_description)) {
+                $description = strip_tags($descData->short_description);
+            }
+        }
+        
+        // Create Google Calendar URL
+        $url = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+        $url .= "&text=" . urlencode($event->title);
+        $url .= "&dates=" . $startDate . "/" . $endDate;
+        $url .= "&details=" . urlencode($description ?: $event->title);
+        $url .= "&location=" . urlencode($event->location);
+        $url .= "&sf=true&output=xml";
+        
+        return redirect($url);
     }
 
     public function policyPages($slug)

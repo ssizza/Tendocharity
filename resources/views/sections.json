@@ -7,6 +7,14 @@
             "subheading": "text"
         }
     },
+    "events": {
+        "builder": true,
+        "name": "Events Section",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        }
+    },
      "help": {
         "builder": true,
         "name": "Get Help Section",

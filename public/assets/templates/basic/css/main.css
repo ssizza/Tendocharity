@@ -4054,3 +4054,59 @@ button .spinner-border {
     color: hsl(var(--white));
 } 
 
+/* Event Status Badges */
+.event-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.event-badge.upcoming {
+    background: var(--base-color);
+    color: #fff;
+}
+
+.event-badge.ongoing {
+    background: #28a745;
+    color: #fff;
+}
+
+.event-badge.completed {
+    background: #6c757d;
+    color: #fff;
+}
+
+.event-badge.cancelled {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* Event Cards */
+.event-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.event-card-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Booking Form */
+.booking-form .form-control {
+    border: 1px solid #dee2e6;
+    padding: 10px 15px;
+}
+
+.booking-form .form-control:focus {
+    border-color: var(--base-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--base-rgb), 0.25);
+}
