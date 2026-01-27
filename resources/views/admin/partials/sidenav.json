@@ -9,6 +9,37 @@
         "route_name": "admin.dashboard",
         "menu_active": "admin.dashboard"
     },
+         "manage_events": {
+        "title": "Manage Events",
+        "icon": "las la-calendar-alt",
+        "menu_active": ["admin.events*"],
+        "submenu": [
+            {
+                "keyword": ["All Events", "Events list", "Event management", "Events control"],
+                "title": "All Events",
+                "route_name": "admin.events.index",
+                "menu_active": "admin.events.index"
+            },
+            {
+                "keyword": ["Create Event", "Add Event", "New Event"],
+                "title": "Create Event",
+                "route_name": "admin.events.create",
+                "menu_active": "admin.events.create"
+            },
+            {
+                "keyword": ["Event Applicants", "Event Registrations", "Event Participants"],
+                "title": "Event Applicants",
+                "route_name": "admin.events.applicants",
+                "menu_active": "admin.events.applicants"
+            },
+            {
+                "keyword": ["Event Gallery", "Event Photos", "Event Images"],
+                "title": "Event Gallery",
+                "route_name": "admin.events.gallery",
+                "menu_active": "admin.events.gallery"
+            }
+        ]
+    },
     "manage_staff": {
         "title": "Manage Staff",
         "icon": "las la-user-friends",

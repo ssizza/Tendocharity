@@ -25,7 +25,13 @@ class Event extends Model
         'description' => 'array',
         'startDate' => 'datetime',
         'endDate' => 'datetime',
+        'createdAt' => 'datetime',
+        'updatedAt' => 'datetime',
     ];
+
+    // Specify the custom column names for timestamps
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
 
     public function applicants()
     {

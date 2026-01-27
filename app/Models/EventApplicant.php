@@ -23,6 +23,9 @@ class EventApplicant extends Model
         'createdAt' => 'datetime',
     ];
 
+    // Specify that this model doesn't use Laravel's default timestamps
+    public $timestamps = false;
+
     public function event()
     {
         return $this->belongsTo(Event::class, 'eventId');

@@ -8,6 +8,7 @@ use App\Models\EventGallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -32,10 +33,29 @@ class EventController extends Controller
         $gallery = EventGallery::where('eventId', $id)->get();
         $applicantsCount = EventApplicant::where('eventId', $id)->count();
         
-        // Generate slug from title if not provided
-        $eventSlug = str_slug($event->title);
+        // Decode description
+        $description = json_decode($event->description, true);
         
-        return view('events.show', compact('pageTitle', 'event', 'gallery', 'applicantsCount'));
+        // Check if booking is open
+        $isOpenForBooking = $event->isOpenForBooking();
+        
+        // Get related events
+        $relatedEvents = Event::where('id', '!=', $id)
+            ->whereIn('status', ['upcoming', 'ongoing'])
+            ->where('type', $event->type)
+            ->orderBy('startDate', 'asc')
+            ->limit(3)
+            ->get();
+        
+        return view('event_details', compact(
+            'pageTitle', 
+            'event', 
+            'gallery', 
+            'applicantsCount',
+            'description',
+            'isOpenForBooking',
+            'relatedEvents'
+        ));
     }
 
     public function book(Request $request, $id)
@@ -76,6 +96,9 @@ class EventController extends Controller
         $application->phone = $request->phone;
         $application->save();
 
+        // You might want to send a confirmation email here
+        // $this->sendConfirmationEmail($application, $event);
+
         $notify[] = ['success', 'Your application has been submitted successfully!'];
         return back()->withNotify($notify);
     }
@@ -83,6 +106,10 @@ class EventController extends Controller
     public function generateGoogleCalendarLink($id)
     {
         $event = Event::findOrFail($id);
+        
+        // Decode description for Google Calendar
+        $description = json_decode($event->description, true);
+        $shortDescription = $description['short_description'] ?? $event->title;
         
         // Format dates for Google Calendar
         $startDate = Carbon::parse($event->startDate)->format('Ymd\THis\Z');
@@ -92,10 +119,33 @@ class EventController extends Controller
         $url = "https://calendar.google.com/calendar/render?action=TEMPLATE";
         $url .= "&text=" . urlencode($event->title);
         $url .= "&dates=" . $startDate . "/" . $endDate;
-        $url .= "&details=" . urlencode(strip_tags(json_decode($event->description)->short_description ?? $event->title));
+        $url .= "&details=" . urlencode(strip_tags($shortDescription));
         $url .= "&location=" . urlencode($event->location);
         $url .= "&sf=true&output=xml";
         
         return redirect($url);
+    }
+
+    // Optional: Add events listing by type
+    public function virtualEvents()
+    {
+        $pageTitle = 'Virtual Events';
+        $events = Event::where('type', 'virtual')
+                      ->whereIn('status', ['upcoming', 'ongoing'])
+                      ->orderBy('startDate', 'asc')
+                      ->paginate(12);
+        
+        return view('events.virtual', compact('pageTitle', 'events'));
+    }
+
+    public function physicalEvents()
+    {
+        $pageTitle = 'Physical Events';
+        $events = Event::where('type', 'physical')
+                      ->whereIn('status', ['upcoming', 'ongoing'])
+                      ->orderBy('startDate', 'asc')
+                      ->paginate(12);
+        
+        return view('events.physical', compact('pageTitle', 'events'));
     }
 }

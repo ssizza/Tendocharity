@@ -130,57 +130,51 @@ class SiteController extends Controller
         return to_route('ticket.view', [$ticket->ticket])->withNotify($notify);
     }
 
-    // Events Methods
-  // Events Methods
-public function events()
-{
-    $pageTitle = 'Events';
-    
-    // Try to get events page from Pages table
-    $sections = Page::where('slug', 'events')->first();
-    
-    $seoContents = null;
-    $seoImage = null;
-    
-    if ($sections && $sections->seo_content) {
-        $seoContents = $sections->seo_content;
-        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
-    }
-    
-    // Get events
-    $events = Event::whereIn('status', ['upcoming', 'ongoing'])
-        ->orderBy('startDate', 'asc')
-        ->paginate(12);
-    
-    $ongoingEvents = collect([]);
-    if ($events->count() > 0) {
+    // Update the events method to return proper data
+    public function events()
+    {
+        $pageTitle = 'Events';
+        
+        // Try to get events page from Pages table
+        $sections = Page::where('slug', 'events')->first();
+        
+        $seoContents = null;
+        $seoImage = null;
+        
+        if ($sections && $sections->seo_content) {
+            $seoContents = $sections->seo_content;
+            $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+        }
+        
+        // For main events page, show dashboard view with sections
+        $upcomingEvents = Event::where('status', 'upcoming')
+            ->where('startDate', '>', Carbon::now())
+            ->orderBy('startDate', 'asc')
+            ->take(6)
+            ->get();
+            
         $ongoingEvents = Event::where('status', 'ongoing')
             ->where('startDate', '<=', Carbon::now())
             ->where('endDate', '>=', Carbon::now())
             ->orderBy('startDate', 'asc')
-            ->take(3)
+            ->take(6)
             ->get();
-    }
         
-    $upcomingEvents = collect([]);
-    if ($events->count() > 0) {
-        $upcomingEvents = Event::where('status', 'upcoming')
-            ->where('startDate', '>', Carbon::now())
-            ->orderBy('startDate', 'asc')
-            ->take(3)
+        $recentCompleted = Event::where('status', 'completed')
+            ->orderBy('startDate', 'desc')
+            ->take(6)
             ->get();
+        
+        return view('events', compact(
+            'pageTitle', 
+            'sections', 
+            'seoContents', 
+            'seoImage', 
+            'upcomingEvents', 
+            'ongoingEvents',
+            'recentCompleted'
+        ));
     }
-    
-    return view('events', compact(
-        'pageTitle', 
-        'sections', 
-        'seoContents', 
-        'seoImage', 
-        'events', 
-        'upcomingEvents', 
-        'ongoingEvents'
-    ));
-}
 
     public function eventDetails($id, $slug = null)
     {
@@ -261,14 +255,16 @@ public function events()
         $application->phone = $request->phone;
         $application->save();
 
-        // Create admin notification
+        // Create admin notification using the correct route
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = auth()->user() ? auth()->user()->id : 0;
         $adminNotification->title = 'New event registration: ' . $event->title;
-        $adminNotification->click_url = urlPath('admin.event.applicants', $id);
+        
+        // Use the correct admin route for event applicants
+        $adminNotification->click_url = urlPath('admin.events.applicants', ['eventId' => $id]);
         $adminNotification->save();
 
-        $notify[] = ['success', 'Your registration has been submitted successfully!'];
+        $notify[] = ['success', 'Your registration has been submitted successfully! You will receive a confirmation email shortly.'];
         return back()->withNotify($notify);
     }
 
@@ -550,4 +546,110 @@ public function events()
             'result' => $execute
         ]);
     }
+    
+
+public function upcomingEvents()
+{
+    $pageTitle = 'Upcoming Events';
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    $events = Event::where('status', 'upcoming')
+        ->where('startDate', '>', Carbon::now())
+        ->orderBy('startDate', 'asc')
+        ->paginate(12);
+    
+    return view('events', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'events'));
+}
+
+public function ongoingEvents()
+{
+    $pageTitle = 'Ongoing Events';
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    $events = Event::where('status', 'ongoing')
+        ->where('startDate', '<=', Carbon::now())
+        ->where('endDate', '>=', Carbon::now())
+        ->orderBy('startDate', 'asc')
+        ->paginate(12);
+    
+    return view('events', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'events'));
+}
+
+public function completedEvents()
+{
+    $pageTitle = 'Completed Events';
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    $events = Event::where('status', 'completed')
+        ->orderBy('startDate', 'desc')
+        ->paginate(12);
+    
+    return view('events', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'events'));
+}
+
+public function virtualEvents()
+{
+    $pageTitle = 'Virtual Events';
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    $events = Event::where('type', 'virtual')
+        ->whereIn('status', ['upcoming', 'ongoing'])
+        ->orderBy('startDate', 'asc')
+        ->paginate(12);
+    
+    return view('events', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'events'));
+}
+
+public function physicalEvents()
+{
+    $pageTitle = 'In-person Events';
+    $sections = Page::where('slug', 'events')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    $events = Event::where('type', 'physical')
+        ->whereIn('status', ['upcoming', 'ongoing'])
+        ->orderBy('startDate', 'asc')
+        ->paginate(12);
+    
+    return view('events', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'events'));
+}
 }

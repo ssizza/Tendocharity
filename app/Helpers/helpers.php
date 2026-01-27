@@ -345,14 +345,25 @@ function verifyG2fa($user, $code, $secret = null)
 
 function urlPath($routeName, $routeParam = null)
 {
-    if ($routeParam == null) {
-        $url = route($routeName);
-    } else {
-        $url = route($routeName, $routeParam);
+    try {
+        if ($routeParam == null) {
+            $url = route($routeName);
+        } else {
+            // Handle both single parameters and arrays
+            if (is_array($routeParam)) {
+                $url = route($routeName, $routeParam);
+            } else {
+                $url = route($routeName, $routeParam);
+            }
+        }
+        $basePath = route('home');
+        $path = str_replace($basePath, '', $url);
+        return $path;
+    } catch (\Exception $e) {
+        // Log the error and return a default path
+        \Log::error('Route not found: ' . $routeName . ' with params: ' . json_encode($routeParam));
+        return '/admin';
     }
-    $basePath = route('home');
-    $path = str_replace($basePath, '', $url);
-    return $path;
 }
 
 function showMobileNumber($number)

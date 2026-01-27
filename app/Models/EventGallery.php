@@ -23,6 +23,9 @@ class EventGallery extends Model
         'updated_at' => 'datetime',
     ];
 
+    // Since your table uses created_at and updated_at (snake_case), 
+    // you don't need to specify custom names here
+    
     public function event()
     {
         return $this->belongsTo(Event::class, 'eventId');

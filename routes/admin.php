@@ -72,48 +72,6 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::post('domain/update', 'domainUpdate')->name('order.domain.update');
     });
 
-    //Order
-    Route::controller('OrderController')->group(function(){
-        Route::get('orders', 'orders')->name('orders');
-        Route::get('pending/orders', 'pending')->name('orders.pending');
-        Route::get('active/orders', 'active')->name('orders.active');
-        Route::get('cancelled/orders', 'cancelled')->name('orders.cancelled');
-        Route::get('order/details/{id}', 'details')->name('orders.details');
-        Route::post('accept/order', 'accept')->name('order.accept');
-        Route::post('cancel/order', 'cancel')->name('order.cancel');
-        Route::post('mark-as-pending/order', 'markPending')->name('order.mark.pending');
-        Route::post('order/notes', 'orderNotes')->name('order.notes');
-    });
-
-    //Invoice
-    Route::controller('InvoiceController')->group(function(){
-        Route::get('invoices', 'invoices')->name('invoices');
-        Route::get('cancelled/invoices', 'cancelled')->name('invoices.cancelled');
-        Route::get('paid/invoices', 'paid')->name('invoices.paid');
-        Route::get('unpaid/invoices', 'unpaid')->name('invoices.unpaid');
-        Route::get('payment-pending/invoices', 'paymentPending')->name('invoices.payment.pending');
-        Route::get('refunded/invoices', 'refunded')->name('invoices.refunded');
-        Route::get('invoice/details/{id}', 'details')->name('invoices.details');
-        Route::post('invoice/update', 'updateInvoice')->name('invoice.update');
-        Route::get('download/{id}/{view?}', 'download')->name('invoice.download');
-        Route::post('delete/invoice/item', 'deleteInvoiceItem')->name('invoice.item.delete');
-        Route::post('refund/invoice', 'refundInvoice')->name('invoice.refund');
-
-        Route::get('domain/{id}/invoices', 'InvoiceController@domainInvoices')->name('invoices.domain.all');
-        Route::get('hosting/{id}/invoices', 'InvoiceController@hostingInvoices')->name('invoices.hosting.all');
-
-        Route::get('invoice/{id}/payment/transactions', 'InvoiceController@paymentTransactions')->name('invoices.payment.transactions');
-    });
-
-    //Service Cancel Request
-    Route::controller('CancelRequestController')->group(function(){
-        Route::get('cancel/requests', 'allRequests')->name('cancel.requests');
-        Route::get('cancel/request/pending', 'pending')->name('cancel.request.pending');
-        Route::get('cancel/request/completed', 'completed')->name('cancel.request.completed');
-        Route::post('cancel/request', 'cancel')->name('cancel.request');
-        Route::post('cancel/request/delete', 'delete')->name('cancel.request.delete');
-    });
-
     Route::controller('StaffController')->prefix('staff')->name('staff.')->group(function () {
         Route::get('', 'index')->name('index');
         Route::post('save/{id?}', 'save')->name('save');
@@ -137,96 +95,6 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::post('tld/status/{id}', 'status')->name('tld.status');
     });
 
-    //Domain Register
-    Route::controller('DomainRegisterController')->group(function(){
-        Route::get('domain/registers', 'all')->name('register.domain');
-        Route::post('domain/register/update', 'update')->name('register.domain.update');
-        Route::post('auto/domain/register', 'autoRegister')->name('register.domain.auto');
-        Route::post('domain/register/status/{id}', 'status')->name('register.domain.status');
-    });
-
-    //Configuration
-    Route::controller('ConfigurableController')->group(function(){
-        Route::get('configurable/groups','groups')->name('configurable.groups');
-        Route::post('add/configurable/group','addGroup')->name('configurable.group.add');
-        Route::post('update/configurable/group','updateGroup')->name('configurable.group.update');
-        Route::post('configurable/group/status/{id}', 'groupStatus')->name('configurable.group.status');
-
-        Route::get('configurable/group/{id}/options','options')->name('configurable.group.options');
-        Route::post('add/configurable/group/option','addOption')->name('configurable.group.add.option');
-        Route::post('update/configurable/group/option','updateOption')->name('configurable.group.update.option');
-        Route::post('configurable/group/option/status/{id}', 'optionStatus')->name('configurable.group.option.status');
-
-        Route::get('configurable/group/{groupId}/{optionId}/sub/options','subOptions')->name('configurable.group.sub.options');
-        Route::post('configurable/group/add/sub/option','addSubOption')->name('configurable.group.add.sub.option');
-        Route::post('configurable/group/update/sub/option','updateSubOption')->name('configurable.group.update.sub.option');
-        Route::post('configurable/group/sub/option/status/{id}', 'subOptionStatus')->name('configurable.group.sub.option.status');
-    });
-
-    //Hosting Module
-    Route::controller('HostingModuleController')->group(function(){
-        Route::post('module/command', 'moduleCommand')->name('module.command');
-        Route::post('login/hosting', 'loginHosting')->name('module.login.hosting');
-    });
-
-    //Domain Module
-    Route::controller('DomainModuleController')->group(function(){
-        Route::post('domain/module/command', 'moduleCommand')->name('domain.module.command');
-        Route::get('domain/contact/details/{id}', 'domainContact')->name('order.domain.contact');
-    });
-
-    //Product
-    Route::controller('ProductController')->group(function(){
-        Route::get('products','products')->name('products');
-        Route::get('add/product','addProductPage')->name('product.add.page');
-        Route::post('add/product','addProduct')->name('product.add');
-        Route::get('edit/product/{id}','editProductPage')->name('product.update.page');
-        Route::post('update/product','updateProduct')->name('product.update');
-        Route::post('product/status/{id}', 'status')->name('product.status');
-
-        Route::post('get/server/package','getServerPackage')->name('get.server.package');
-    });
-
-    //Service Category
-    Route::controller('ServiceCategoryController')->group(function(){
-        Route::get('categories', 'all')->name('service.category');
-        Route::post('add/category', 'add')->name('service.category.add');
-        Route::post('update/category', 'update')->name('service.category.update');
-        Route::post('status/{id}', 'status')->name('service.category.status');
-    });
-
-    //Server
-    Route::controller('ServerController')->group(function(){
-        Route::get('groups/server','groupsServer')->name('groups.server');
-        Route::post('add/group/server','addGroupServer')->name('group.server.add');
-        Route::post('update/group/server','updateGroupServer')->name('group.server.update');
-        Route::post('group/server/status/{id}', 'groupServerStatus')->name('group.server.status');
-
-        Route::get('servers','servers')->name('servers');
-        Route::get('add/server','addServerPage')->name('server.add.page');
-        Route::post('add/server','addServer')->name('server.add');
-        Route::get('edit/server/{id}','editServerPage')->name('server.edit.page');
-        Route::post('update/server','updateServer')->name('server.update');
-        Route::get('server/login/{id}','serverLogin')->name('server.login');
-        Route::post('server/status/{id}', 'serverStatus')->name('server.status');
-
-        Route::post('server/test/connection','testConnection')->name('server.test.connection');
-    });
-
-    // Billing Setting
-    Route::controller('BillingSettingController')->group(function(){
-        Route::get('billing-setting', 'index')->name('billing.setting');
-        Route::post('billing-setting', 'update')->name('billing.setting.update');
-        Route::post('update/advance/billing/setting', 'advanceBillingSetting')->name('billing.setting.advanced');
-    });
-
-    //Coupon
-    Route::controller('CouponController')->group(function(){
-        Route::get('coupons', 'coupons')->name('coupons');
-        Route::post('add/coupon', 'add')->name('coupon.add');
-        Route::post('update/coupon', 'update')->name('coupon.update');
-        Route::post('coupon/status/{id}', 'status')->name('coupon.status');
-    });
 
     // Users Manager
     Route::controller('ManageUsersController')->name('users.')->prefix('clients')->group(function(){
@@ -391,6 +259,25 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::post('maintenance-mode','maintenanceModeSubmit');
     });
 
+    // Event Cron Configuration
+    Route::name('events.')->prefix('events')->group(function () {
+        // Events CRUD
+        Route::get('/', 'EventController@index')->name('index');
+        Route::get('create', 'EventController@create')->name('create');
+        Route::post('store', 'EventController@store')->name('store');
+        Route::get('edit/{id}', 'EventController@edit')->name('edit');
+        Route::post('update/{id}', 'EventController@update')->name('update');
+        Route::post('delete/{id}', 'EventController@delete')->name('delete');
+        
+        // Applicants
+        Route::get('applicants', 'EventController@applicants')->name('applicants');
+        Route::post('applicants/delete/{id}', 'EventController@deleteApplicant')->name('applicants.delete');
+        
+        // Gallery
+        Route::get('gallery', 'EventController@gallery')->name('gallery');
+        Route::post('gallery/store', 'EventController@storeGallery')->name('gallery.store');
+        Route::post('gallery/delete/{id}', 'EventController@deleteGallery')->name('gallery.delete');
+    });
 
     Route::controller('CronConfigurationController')->name('cron.')->prefix('cron')->group(function () {
         Route::get('index', 'cronJobs')->name('index');
