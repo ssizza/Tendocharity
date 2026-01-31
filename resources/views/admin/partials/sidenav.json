@@ -9,6 +9,31 @@
         "route_name": "admin.dashboard",
         "menu_active": "admin.dashboard"
     },
+    "manage_services": {
+        "title": "Manage Services",
+        "icon": "las la-hands-helping",
+        "menu_active": ["admin.services*"],
+        "submenu": [
+            {
+                "keyword": ["All Services", "Services list", "Service management", "Services control"],
+                "title": "All Services",
+                "route_name": "admin.services.index",
+                "menu_active": "admin.services.index"
+            },
+            {
+                "keyword": ["Create Service", "Add Service", "New Service"],
+                "title": "Create Service",
+                "route_name": "admin.services.create",
+                "menu_active": "admin.services.create"
+            },
+            {
+                "keyword": ["Service Stories", "Success Stories", "Testimonials", "Case Studies"],
+                "title": "Stories & Testimonials",
+                "route_name": "admin.services.stories",
+                "menu_active": "admin.services.stories"
+            }
+        ]
+    },
          "manage_events": {
         "title": "Manage Events",
         "icon": "las la-calendar-alt",

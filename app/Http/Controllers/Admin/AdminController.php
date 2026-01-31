@@ -255,39 +255,63 @@ class AdminController extends Controller
         return ['success' => true, 'message' => 'OK'];
     }
 
-    public function orderStatistics(Request $request)
-    {
-        // Simplified - return empty stats for now
-        if ($request->time == 'year') {
-            $type = 'monthname';
-        } elseif ($request->time == 'month') {
-            $type = 'date';
-        } elseif ($request->time == 'week') {
-            $type = 'dayname';
-        } else {
-            $type = 'hour';
-        }
+    
+    
+   public function services()
+{
+    $pageTitle = 'Services';
+    
+    // Try to get services page from Pages table
+    $sections = Page::where('slug', 'services')->first();
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    if ($sections && $sections->seo_content) {
+        $seoContents = $sections->seo_content;
+        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+    }
+    
+    // Get active services with campaigns count
+    $services = \App\Models\Service::active()->withCount('campaigns')->get();
+    
+    return view('services', compact(
+        'pageTitle', 
+        'sections', 
+        'seoContents', 
+        'seoImage', 
+        'services'
+    ));
+}
 
-        $orders = collect();
-        $totalOrders = 0;
-
-        return [
-            'orders' => $orders,
-            'total_orders' => $totalOrders,
+public function serviceDetails($slug)
+{
+    $service = \App\Models\Service::where('slug', $slug)
+        ->active()
+        ->with(['campaigns' => function($query) {
+            $query->active()->latest();
+        }, 'stories', 'caseStudies', 'testimonials'])
+        ->firstOrFail();
+        
+    $pageTitle = $service->title;
+    
+    $seoContents = null;
+    $seoImage = null;
+    
+    // Use service meta data for SEO
+    if ($service->meta_title || $service->meta_description) {
+        $seoContents = (object) [
+            'heading' => $service->meta_title ?: $service->title,
+            'description' => $service->meta_description,
+            'keywords' => $service->meta_keywords
         ];
     }
     
-    public function services()
-    {
-        $pageTitle = 'All Services';
-        $services = collect(); // Empty collection for now
-        return view('admin.services', compact('pageTitle', 'services'));
-    }
-
-    public function domains()
-    {
-        $pageTitle = 'All Domains';
-        $domains = collect(); // Empty collection for now
-        return view('admin.domains', compact('pageTitle', 'domains'));
-    }
+    return view('service_details', compact(
+        'pageTitle', 
+        'service', 
+        'seoContents', 
+        'seoImage'
+    ));
+}
 }

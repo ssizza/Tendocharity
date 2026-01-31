@@ -1,96 +1,40 @@
-@php
-    $serviceContent = @getContent('service.content', true);
-    $categories = App\Models\ServiceCategory::active()->get();
-@endphp
+@extends('layouts.frontend')
 
-<div class="col-12 py-5 bg--light">
-    <div class="container px-3">
-        <!-- Jumbotron -->
-        <div class="text-center">
-            <h3>{{ __(@$serviceContent->data_values->heading) }}</h3>
-            <p class="mb-5">{{ __(@$serviceContent->data_values->subheading) }}</p>
-        </div>
-        <!-- Jumbotron -->
 
-        <div class="d-flex gap-4 flex-wrap justify-content-center">
-            @foreach ($categories as $category)
-                <div class="service-card">
-                    <div class="card h-100">
-                        <h5 class="card-header text-center bg-dark-two service-title">{{ __($category->name) }}</h5>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <p class="card-text mb-3">
-                                {{ strLimit(__($category->short_description), 150) }}
-                            </p>
-                            <div class="text-center">
-                                <a href="{{ route('service.category', $category->slug) }}" class="btn btn--base btn--sm">
-                                    @lang('Browse Products')
-                                </a>
-                            </div>
-                        </div>
-
+@section('content')
+<div class="container py-5">
+    <div class="row">
+        @foreach($services as $service)
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow">
+                <div class="position-relative">
+                    <img src="{{ $service->image_url }}" class="card-img-top" alt="{{ $service->title }}" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-primary">{{ $service->campaigns_count }} Campaigns</span>
                     </div>
                 </div>
-            @endforeach
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ $service->title }}</h5>
+                    <p class="card-text text-muted">{{ Str::limit($service->mission, 100) }}</p>
+                    <div class="mb-3">
+                        <small class="text-primary">
+                            <i class="fas fa-bullseye me-1"></i> {{ Str::limit($service->vision, 80) }}
+                        </small>
+                    </div>
+                    <a href="{{ route('service.details', $service->slug) }}" class="btn btn-outline-primary">
+                        Learn More <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-chart-line me-1"></i> Impact: {{ $service->impact_summary ? Str::limit($service->impact_summary, 40) : 'Making Progress' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
         </div>
+        @endforeach
     </div>
 </div>
-
-@push('style')
-    <style>
-        .service-title {
-            font-size: 1rem;
-        }
-
-        .service-card {
-            flex-basis: 380px;
-        }
-
-        @media(max-width: 1399px) {
-            .service-card {
-                flex-basis: 320px;
-            }
-        }
-
-        @media(max-width: 1199px) {
-            .service-card {
-                flex-basis: 290px;
-            }
-        }
-
-        @media(max-width: 991px) {
-            .service-card {
-                flex-basis: 210px;
-            }
-
-            .service-title {
-                font-size: 0.88rem;
-            }
-        }
-
-        @media(max-width: 767px) {
-            .service-card {
-                flex-basis: 240px;
-            }
-
-            .service-title {
-                font-size: 0.88rem;
-            }
-        }
-
-        @media(max-width: 540px) {
-            .service-card {
-                flex-basis: 220px;
-            }
-
-            .service-title {
-                font-size: 0.88rem;
-            }
-        }
-
-        @media(max-width: 500px) {
-            .service-card {
-                flex-basis: 280px;
-            }
-        }
-    </style>
-@endpush
+@endsection

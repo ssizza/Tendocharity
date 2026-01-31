@@ -32,6 +32,12 @@ Route::controller('SiteController')->name('event.')->prefix('events')->group(fun
     Route::get('{id}/calendar', 'eventAddToCalendar')->name('calendar');
 });
 
+// Services Routes - ADD THIS BEFORE THE DYNAMIC ROUTE
+Route::controller('SiteController')->group(function () {
+    Route::get('/services', 'services')->name('services');
+    Route::get('/services/{slug}', 'serviceDetails')->name('service.details');
+});
+
 // Main Site Controller Routes
 Route::controller('SiteController')->group(function () {
      
@@ -57,6 +63,8 @@ Route::controller('SiteController')->group(function () {
     Route::get('maintenance-mode','maintenance')->withoutMiddleware('maintenance')->name('maintenance');
     Route::post('subscribe', 'subscribe')->name('subscribe');
 
+    // This dynamic route should be LAST
     Route::get('/{slug}', 'pages')->name('pages');
     Route::get('/', 'index')->name('home');
 });
+

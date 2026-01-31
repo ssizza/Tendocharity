@@ -59,9 +59,20 @@ class Service extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->featured_image 
-                ? asset('storage/' . $this->featured_image) 
-                : asset('images/default-service.jpg'),
+            get: function () {
+                // First check if the image exists in the new path (assets/images/service/)
+                if ($this->featured_image && file_exists(public_path($this->featured_image))) {
+                    return asset($this->featured_image);
+                }
+                
+                // Then check if it exists in the old storage path
+                if ($this->featured_image && file_exists(storage_path('app/public/' . $this->featured_image))) {
+                    return asset('storage/' . $this->featured_image);
+                }
+                
+                // If no image exists, return default
+                return asset('images/default-service.jpg');
+            }
         );
     }
 
@@ -74,4 +85,8 @@ class Service extends Model
     {
         return $query->where('sort_order', '>', 0)->orderBy('sort_order');
     }
+    public function storiesCount()
+{
+    return $this->hasMany(ServiceStory::class)->count();
+}
 }

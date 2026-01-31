@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\ServiceController;
 
 Route::namespace('Auth')->group(function () {
     Route::middleware('admin.guest')->group(function(){
@@ -168,19 +168,6 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
     });
 
 
-    // DEPOSIT SYSTEM
-    Route::controller('DepositController')->prefix('payment')->name('deposit.')->group(function(){
-        Route::get('all/{user_id?}', 'deposit')->name('list');
-        Route::get('pending/{user_id?}', 'pending')->name('pending');
-        Route::get('rejected/{user_id?}', 'rejected')->name('rejected');
-        Route::get('approved/{user_id?}', 'approved')->name('approved');
-        Route::get('successful/{user_id?}', 'successful')->name('successful');
-        Route::get('initiated/{user_id?}', 'initiated')->name('initiated');
-        Route::get('details/{id}', 'details')->name('details');
-        Route::post('reject', 'reject')->name('reject');
-        Route::post('approve/{id}', 'approve')->name('approve');
-
-    });
 
     // Report
     Route::controller('ReportController')->prefix('report')->name('report.')->group(function(){
@@ -278,6 +265,25 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::post('gallery/store', 'EventController@storeGallery')->name('gallery.store');
         Route::post('gallery/delete/{id}', 'EventController@deleteGallery')->name('gallery.delete');
     });
+
+Route::name('services.')->prefix('services')->group(function () {
+    // Services CRUD
+    Route::get('/', [ServiceController::class, 'index'])->name('index');
+    Route::get('create', [ServiceController::class, 'create'])->name('create');
+    Route::post('store', [ServiceController::class, 'store'])->name('store');
+    Route::get('edit/{service}', [ServiceController::class, 'edit'])->name('edit');
+    Route::put('update/{service}', [ServiceController::class, 'update'])->name('update'); // CHANGED TO PUT
+    Route::post('delete/{service}', [ServiceController::class, 'destroy'])->name('delete');
+    Route::post('status/{service}', [ServiceController::class, 'toggleStatus'])->name('status');
+    
+    // Service Stories
+    Route::get('stories', [ServiceController::class, 'stories'])->name('stories');
+    Route::get('stories/create', [ServiceController::class, 'createStory'])->name('stories.create');
+    Route::post('stories/store', [ServiceController::class, 'storeStory'])->name('stories.store');
+    Route::get('stories/edit/{story}', [ServiceController::class, 'editStory'])->name('stories.edit');
+    Route::put('stories/update/{story}', [ServiceController::class, 'updateStory'])->name('stories.update'); // ALSO CHANGE THIS
+    Route::post('stories/delete/{story}', [ServiceController::class, 'destroyStory'])->name('stories.delete');
+});
 
     Route::controller('CronConfigurationController')->name('cron.')->prefix('cron')->group(function () {
         Route::get('index', 'cronJobs')->name('index');

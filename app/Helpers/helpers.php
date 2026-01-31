@@ -539,107 +539,6 @@ function xmlToArray($xml)
     return $array;
 }
 
-function pricing($billingCycle = null, $price = null, $type = null, $showText = false, $column = null)
-{
-    try {
-        $array = [
-            1 => ['setupFee' => 'monthly_setup_fee', 'price' => 'monthly'],
-            2 => ['setupFee' => 'quarterly_setup_fee', 'price' => 'quarterly'],
-            3 => ['setupFee' => 'semi_annually_setup_fee', 'price' => 'semi_annually'],
-            4 => ['setupFee' => 'annually_setup_fee',  'price' => 'annually'],
-            5 => ['setupFee' => 'biennially_setup_fee', 'price' => 'biennially'],
-            6 => ['setupFee' => 'triennially_setup_fee', 'price' => 'triennially']
-        ];
-
-        if (!$price) {
-            return implode(',', array_column($array, 'price'));
-        }
-
-        if (!$type) {
-            $general = gs();
-            $options = null;
-
-            foreach ($array as $data) {
-                $setupFee = null;
-                $getColumn = $data['price'];
-                $getFeeColumn = $data['setupFee'];
-
-                if ($billingCycle && $billingCycle == 1) {
-                    if ($price->monthly_setup_fee > 0) {
-                        $setupFee .= ' + ' . $general->cur_sym . getAmount($price->monthly_setup_fee) . ' ' . $general->cur_text . ' Setup Fee';
-                    }
-
-                    $options .= '<option value="monthly">' .
-                        $general->cur_sym . getAmount($price->monthly) . ' ' . $general->cur_text .
-                        $setupFee
-                        . '</option>';
-
-                    return $options;
-                }
-
-                if ($price->$getColumn >= 0) {
-                    if ($price->$getFeeColumn > 0) {
-                        $setupFee .= ' + ' . $general->cur_sym . getAmount($price->$getFeeColumn) . ' ' . $general->cur_text . ' Setup Fee';
-                    }
-
-                    $options .= '<option value="' . $getColumn . '">' .
-                        $general->cur_sym . getAmount($price->$getColumn) . ' ' . $general->cur_text . ' ' . ucwords(str_replace('_', ' ', $getColumn)) . ' ' .
-                        $setupFee
-                        . '</option>';
-                }
-            }
-
-            return $options;
-        }
-
-        foreach ($array as $data) {
-            $getColumn = $data['price'];
-
-            if ($column) {
-                if ($type == 'price') {
-                    return getAmount($price->$column);
-                } else {
-                    $column = $column . '_setup_fee';
-                    return getAmount($price->$column);
-                }
-            }
-
-            if ($billingCycle && $billingCycle == 1) {
-                if ($showText) {
-                    if ($type == 'price') {
-                        return 'One Time';
-                    }
-                    return 'Setup Fee';
-                }
-
-                if ($type == 'price') {
-                    return getAmount($price->monthly);
-                }
-
-                return getAmount($price->monthly_setup_fee);
-            }
-
-            if ($price->$getColumn >= 0) {
-                if ($showText) {
-                    if ($type == 'price') {
-                        $replace = str_replace('_', ' ', $getColumn);
-                        return ucwords($replace);
-                    }
-                    return 'Setup Fee';
-                }
-
-                if ($type == 'price') {
-                    return getAmount($price->$getColumn);
-                }
-
-                $getColumn = $data[$type];
-                return getAmount($price->$getColumn);
-            }
-        }
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-}
 
 function nl22br($text)
 {
@@ -716,3 +615,4 @@ function getProductModuleLogo($type)
     $src = getImage(getFilePath('productModule') . "/$image");
     return "<img src='$src' alt='Product Module Logo' class='product-module-$class' />";
 }
+

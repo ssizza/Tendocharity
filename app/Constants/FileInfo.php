@@ -72,6 +72,18 @@ class FileInfo
         $data['productModule'] = [
             'path'      => 'assets/images/product_module',
         ];
+        $data['service'] = [ 
+            'path' => 'assets/images/service',
+            'size' => '800x600',
+        ];
+        $data['service_gallery'] = [ 
+            'path' => 'assets/images/service/gallery',
+            'size' => '800x600',
+        ];
+        $data['service_story'] = [  
+            'path' => 'assets/images/service/story',
+            'size' => '800x600',
+        ];
         return $data;
 	}
 
