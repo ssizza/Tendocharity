@@ -1,4 +1,70 @@
 {
+    "founder": {
+        "builder": true,
+        "name": "Founder Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "image_alignment": {
+                "type": "select",
+                "options": ["left", "right"]
+            },
+            "images": {
+                "image": {
+                    "size": "600x600"
+                }
+            }
+        }
+    },
+    "history": {
+        "builder": true,
+        "name": "History Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "image_alignment": {
+                "type": "select",
+                "options": ["left", "right"]
+            },
+            "images": {
+                "image": {
+                    "size": "800x600"
+                }
+            }
+        }
+    },
+    "strategic_plan": {
+        "builder": true,
+        "name": "Strategic Plan Section",
+        "content": {
+            "heading": "text",
+            "title": "text",
+            "description": "textarea",
+            "images": {
+                "image": {
+                    "size": "800x600"
+                }
+            }
+        }
+    },
+    "vision": {
+        "builder": true,
+        "name": "Vision Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "icon": "text"
+        }
+    },
+    "mission": {
+        "builder": true,
+        "name": "Mission Section",
+        "content": {
+            "heading": "text",
+            "description": "textarea",
+            "icon": "text"
+        }
+    },
     "service": {
         "builder": true,
         "name": "Service Section",
