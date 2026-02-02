@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Builder;
 
 class Service extends Model
 {
@@ -75,12 +76,11 @@ class Service extends Model
             }
         );
     }
-
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
     }
-
+ 
     public function scopeFeatured($query)
     {
         return $query->where('sort_order', '>', 0)->orderBy('sort_order');

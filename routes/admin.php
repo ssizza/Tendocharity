@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\Fundraisers\CategoryController;
+use App\Http\Controllers\Admin\Fundraisers\FundraiserController;
 
 Route::namespace('Auth')->group(function () {
     Route::middleware('admin.guest')->group(function(){
@@ -378,20 +380,35 @@ Route::name('services.')->prefix('services')->group(function () {
             Route::post('remove/{id}', 'remove')->name('remove');
         });
 
-        // Page Builder
-        Route::controller('PageBuilderController')->group(function(){
-            Route::get('manage-pages', 'managePages')->name('manage.pages');
-            Route::get('manage-pages/check-slug/{id?}', 'checkSlug')->name('manage.pages.check.slug');
-            Route::post('manage-pages', 'managePagesSave')->name('manage.pages.save');
-            Route::post('manage-pages/update', 'managePagesUpdate')->name('manage.pages.update');
-            Route::post('manage-pages/delete/{id}', 'managePagesDelete')->name('manage.pages.delete');
-            Route::get('manage-section/{id}', 'manageSection')->name('manage.section');
-            Route::post('manage-section/{id}', 'manageSectionUpdate')->name('manage.section.update');
-
-            Route::get('manage-seo/{id}','manageSeo')->name('manage.pages.seo');
-            Route::post('manage-seo/{id}','manageSeoStore');
-        });
-
     });
+
+
+        // Fundraiser Routes
+        Route::prefix('fundraisers')->name('fundraisers.')->group(function () {
+            // Categories
+            Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+            Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
+            Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
+            Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+            Route::post('categories/{category}/update', [CategoryController::class, 'update'])->name('categories.update');
+            Route::post('categories/{category}/status', [CategoryController::class, 'toggleStatus'])->name('categories.status');
+            Route::post('categories/{category}/delete', [CategoryController::class, 'destroy'])->name('categories.delete');
+            
+            // Fundraisers
+            Route::get('/', [FundraiserController::class, 'index'])->name('index');
+            Route::get('pending', [FundraiserController::class, 'pending'])->name('pending');
+            Route::get('create', [FundraiserController::class, 'create'])->name('create');
+            Route::post('store', [FundraiserController::class, 'store'])->name('store');
+            Route::get('{fundraiser}/edit', [FundraiserController::class, 'edit'])->name('edit');
+            Route::post('{fundraiser}/update', [FundraiserController::class, 'update'])->name('update');
+            Route::post('{fundraiser}/status', [FundraiserController::class, 'updateStatus'])->name('status');
+            Route::post('{fundraiser}/approve', [FundraiserController::class, 'approve'])->name('approve');
+            Route::post('{fundraiser}/reject', [FundraiserController::class, 'reject'])->name('reject');
+            Route::post('{fundraiser}/toggle-featured', [FundraiserController::class, 'toggleFeatured'])->name('toggle.featured');
+            Route::post('{fundraiser}/delete', [FundraiserController::class, 'destroy'])->name('delete');
+            
+            // Ajax
+            Route::get('get-type-fields', [FundraiserController::class, 'getTypeFields'])->name('get.type.fields');
+        });
 });
 

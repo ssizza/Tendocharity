@@ -84,6 +84,44 @@
             }
         ]
     },
+ "manage_fundraisers": {
+        "title": "Manage Fundraisers",
+        "icon": "las la-hand-holding-heart",
+        "menu_active": ["admin.fundraisers*", "admin.categories*"],
+        "submenu": [
+            {
+                "keyword": ["All Categories", "Categories list", "Category management"],
+                "title": "Categories",
+                "route_name": "admin.fundraisers.categories.index",
+                "menu_active": "admin.fundraisers.categories.index"
+            },
+            {
+                "keyword": ["Create Category", "Add Category", "New Category"],
+                "title": "Create Category",
+                "route_name": "admin.fundraisers.categories.create",
+                "menu_active": "admin.fundraisers.categories.create"
+            },
+            {
+                "keyword": ["All Fundraisers", "Fundraisers list", "Fundraiser management"],
+                "title": "All Fundraisers",
+                "route_name": "admin.fundraisers.index",
+                "menu_active": "admin.fundraisers.index"
+            },
+            {
+                "keyword": ["Create Fundraiser", "Add Fundraiser", "New Fundraiser"],
+                "title": "Create Fundraiser",
+                "route_name": "admin.fundraisers.create",
+                "menu_active": "admin.fundraisers.create"
+            },
+            {
+                "keyword": ["Pending Fundraisers", "Approval Queue"],
+                "title": "Pending Approval",
+                "route_name": "admin.fundraisers.pending",
+                "menu_active": "admin.fundraisers.pending"
+            }
+        ]
+    },
+
     "automation_errors": {
         "keyword": ["Automation Errors", "Automation", "Errors"],
         "title": "Automation Errors",

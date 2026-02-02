@@ -390,6 +390,11 @@ class ServiceController extends Controller
         $notify[] = ['success', 'Story deleted successfully'];
         return back()->withNotify($notify);
     }
-
+    public function categories(Service $service)
+    {
+        $pageTitle = "Categories for {$service->title}";
+        $categories = $service->categories()->withCount('fundraisers')->latest()->paginate(getPaginate());
+        return view('admin.services.categories', compact('pageTitle', 'service', 'categories'));
+    }
 
 }
