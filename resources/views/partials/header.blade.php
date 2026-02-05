@@ -21,12 +21,6 @@
                                 <a href="{{ route('pages', ['about-us']) }}">@lang('About Us')</a>
                             </li>
                             <li>
-                                <a href="{{ route('pages', ['our-story']) }}">@lang('Our Story')</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pages', ['gallery']) }}">@lang('Our Gallery')</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('pages', ['team']) }}">@lang('Our Team')</a>
                             </li>
                         </ul>
@@ -43,9 +37,6 @@
                                 <a href="{{ route('pages', ['events']) }}">@lang('Events')</a>
                             </li>
                             <li>
-                                <a href="{{ route('pages', ['newsletter']) }}">@lang('Newsletter')</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('pages', ['faq']) }}">@lang('FAQ')</a>
                             </li>
                         </ul>
@@ -53,7 +44,7 @@
                     
                     <!-- Our Work -->
                     <li>
-                        <a href="{{ route('pages', ['our-work']) }}">@lang('OUR WORK')</a>
+                        <a href="{{ route('pages', ['services']) }}">@lang('OUR WORK')</a>
                     </li>
                     
                     <!-- Blog -->

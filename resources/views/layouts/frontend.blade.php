@@ -6,7 +6,10 @@
     
     @include('partials.header')
 
-    @include('partials.breadcrumb')
+    {{-- Conditionally show breadcrumb based on AppServiceProvider variable --}}
+    @unless($hideBreadcrumb ?? false)
+        @include('partials.breadcrumb')
+    @endunless
 
     @yield('content')
 
@@ -15,5 +18,4 @@
     @include('partials.subscribe')
     
     <x-cookie-policy />
-@endsection 
- 
+@endsection

@@ -6,7 +6,7 @@ use App\Constants\Status;
 use App\Lib\Searchable;
 use App\Models\{AdminNotification, Frontend, SupportTicket, User};
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\{Blade, Cache, View};
+use Illuminate\Support\Facades\{Blade, Cache, View, Route};
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -67,6 +67,28 @@ class AppServiceProvider extends ServiceProvider
         View::composer('partials.seo', function ($view) {
             $seo = Frontend::where('data_keys', 'seo.data')->first();
             $view->with(['seo' => $seo?->data_values ?? $seo]);
+        });
+
+        // 6. Breadcrumb Visibility for Frontend Layout
+        View::composer('layouts.frontend', function ($view) {
+            $currentRoute = Route::currentRouteName();
+            
+            // Define routes where breadcrumb should be hidden
+            $noBreadcrumbRoutes = [
+                'home',                  // Home page
+                'fundraisers.index',     // Fundraisers list
+                'fundraisers.show',      // Single fundraiser page
+                'service.details',       // Service details page
+                'blog.details',          // Blog details page
+                'event.details',        // Event details page
+                // Add more routes here as needed
+                // 'event.index',         // Events page if needed
+                // 'blogs',               // Blog page if needed
+            ];
+            
+            $hideBreadcrumb = in_array($currentRoute, $noBreadcrumbRoutes);
+            
+            $view->with('hideBreadcrumb', $hideBreadcrumb);
         });
     }
 }
