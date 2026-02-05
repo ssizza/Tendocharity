@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>{{ gs()->siteName(__($pageTitle)) }}</title>
+    <title>{{ gs()->siteName(__($pageTitle ?? trim($__env->yieldContent('title')) ?? '')) }}</title>
+
     @include('partials.seo')
 
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,500&family=Maven+Pro:wght@400;500;600&display=swap" rel="stylesheet">

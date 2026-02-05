@@ -54,21 +54,7 @@
                 </p>
                 @endif
                 
-                {{-- Breadcrumb trail --}}
-                @if (!request()->routeIs('home'))
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mt-4 mb-0">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}" class="text-white text-decoration-none">
-                                @lang('Home')
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active text-white-50" aria-current="page">
-                            {{ __($pageTitle) }}
-                        </li>
-                    </ol>
-                </nav>
-                @endif
+            
             </div>
         </div>
     </div>

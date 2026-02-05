@@ -1,12 +1,16 @@
 <?php
-// app/Models/Category.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
+    use HasFactory;
+
+    protected $table = 'categories';
+    
     protected $fillable = [
         'service_id',
         'name',
@@ -24,46 +28,32 @@ class Category extends Model
 
     protected $casts = [
         'status' => 'string',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
-    /**
-     * Scope: only active categories
-     * Matches Service::scopeActive()
-     */
+    // Scope for active categories
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
     }
 
-    /**
-     * Category belongs to a service
-     */
+    // Relationship with service
     public function service()
     {
         return $this->belongsTo(Service::class);
     }
 
-    /**
-     * Category has many fundraisers
-     */
+    // Relationship with fundraisers
     public function fundraisers()
     {
         return $this->hasMany(Fundraiser::class);
     }
 
-    /**
-     * Created by admin/user
-     */
-    public function createdBy()
+    // Get active fundraisers for this category
+    public function activeFundraisers()
     {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    /**
-     * Updated by admin/user
-     */
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->fundraisers()->active();
     }
 }

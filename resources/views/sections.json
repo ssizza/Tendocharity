@@ -1,4 +1,28 @@
 {
+    
+    "featured_fundraiser": {
+        "builder": true,
+        "name": "Featured Fundraiser Section",
+        "content": {
+            "heading": "text",
+            "subheading": "textarea",
+            "button_text": "text",
+            "button_link": "text"
+        }
+    },
+    "fundraisers_grid": {
+        "builder": true,
+        "name": "Fundraisers Grid Section",
+        "content": {
+            "heading": "text",
+            "subheading": "textarea",
+            "items_per_page": {
+                "type": "select",
+                "options": ["6", "9", "12", "15"]
+            },
+            "show_filters": "checkbox"
+        }
+    },
     "founder": {
         "builder": true,
         "name": "Founder Section",

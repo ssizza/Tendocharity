@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FundraiserController;
+use App\Http\Controllers\DonationController;
+
 
 Route::get('/clear', function(){
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
@@ -30,6 +33,20 @@ Route::controller('SiteController')->name('event.')->prefix('events')->group(fun
     Route::get('{id}/{slug?}', 'eventDetails')->name('details');
     Route::post('{id}/book', 'eventBookSubmit')->name('book');
     Route::get('{id}/calendar', 'eventAddToCalendar')->name('calendar');
+});
+
+// Fundraiser Routes
+Route::controller(FundraiserController::class)->prefix('fundraisers')->name('fundraisers.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{slug}', 'show')->name('show');
+    Route::post('/{id}/donate', 'createDonation')->name('donate');
+});
+
+// Donations Routes
+Route::controller(DonationController::class)->prefix('donations')->name('donations.')->group(function () {
+    Route::post('/create/{fundraiser_id}', 'store')->name('create');
+    Route::get('/success/{id}', 'success')->name('success');
+    Route::get('/cancel/{id}', 'cancel')->name('cancel');
 });
 
 // Services Routes - ADD THIS BEFORE THE DYNAMIC ROUTE

@@ -380,6 +380,20 @@ Route::name('services.')->prefix('services')->group(function () {
             Route::post('remove/{id}', 'remove')->name('remove');
         });
 
+        // Page Builder
+        Route::controller('PageBuilderController')->group(function(){
+            Route::get('manage-pages', 'managePages')->name('manage.pages');
+            Route::get('manage-pages/check-slug/{id?}', 'checkSlug')->name('manage.pages.check.slug');
+            Route::post('manage-pages', 'managePagesSave')->name('manage.pages.save');
+            Route::post('manage-pages/update', 'managePagesUpdate')->name('manage.pages.update');
+            Route::post('manage-pages/delete/{id}', 'managePagesDelete')->name('manage.pages.delete');
+            Route::get('manage-section/{id}', 'manageSection')->name('manage.section');
+            Route::post('manage-section/{id}', 'manageSectionUpdate')->name('manage.section.update');
+
+            Route::get('manage-seo/{id}','manageSeo')->name('manage.pages.seo');
+            Route::post('manage-seo/{id}','manageSeoStore');
+        });
+
     });
 
 
