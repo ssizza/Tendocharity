@@ -85,3 +85,21 @@ Route::controller('SiteController')->group(function () {
     Route::get('/', 'index')->name('home');
 });
 
+// Donation Payment Routes (No Auth Required)
+Route::controller(\App\Http\Controllers\Gateway\DonationPaymentController::class)->group(function () {
+    // Donation payment flow
+    Route::get('/donate/{fundraiser}', 'initiateDonation')->name('donation.initiate');
+    Route::post('/donate/{fundraiser}/process', 'insertDonation')->name('donation.insert');
+    Route::get('/donation/confirm', 'confirmPayment')->name('donation.payment.confirm');
+    Route::get('/donation/manual/confirm', 'manualConfirm')->name('donation.payment.manual.confirm');
+    Route::post('/donation/manual/update', 'manualUpdate')->name('donation.payment.manual.update');
+    Route::get('/donation/success/{reference}', 'success')->name('donation.success');
+    Route::get('/donation/cancel/{reference}', 'cancel')->name('donation.cancel');
+    Route::get('/donation/status/{reference}', 'checkDonationStatus')->name('donation.status');
+});
+
+// Update existing donation route to use new controller
+Route::post('/fundraisers/{id}/donate', [\App\Http\Controllers\Gateway\DonationPaymentController::class, 'insertDonation'])
+    ->name('fundraisers.donate');
+
+    

@@ -145,7 +145,7 @@
             <div class="card donation-card p-4">
                 <h5 class="fw-bold mb-3">Donate to this cause</h5>
 
-                <form action="{{ route('donations.create', $fundraiser->id) }}" method="POST">
+                <form action="{{ route('donation.initiate', $fundraiser->slug) }}" method="GET">
                     @csrf
 
                     <div class="input-group mb-3">

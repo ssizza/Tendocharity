@@ -2,21 +2,22 @@
 
 namespace App\Constants;
 
-class Status{
-
-    const ENABLE = 1;
+class Status
+{
+    const ENABLE  = 1;
     const DISABLE = 0;
-
-    const YES = 1;
-    const NO = 0;
-
+    const YES     = 1;
+    const NO      = 0;
     const VERIFIED = 1;
     const UNVERIFIED = 0;
 
+    // Payment Status
     const PAYMENT_INITIATE = 0;
-    const PAYMENT_SUCCESS = 1;
     const PAYMENT_PENDING = 2;
-    const PAYMENT_REJECT = 3;
+    const PAYMENT_SUCCESS = 1;
+    const PAYMENT_REJECTED = 3;
+    const PAYMENT_FAILED = 4;
+    
 
     CONST TICKET_OPEN = 0;
     CONST TICKET_ANSWER = 1;

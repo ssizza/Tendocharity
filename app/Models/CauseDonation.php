@@ -12,6 +12,7 @@ class CauseDonation extends Model
     protected $table = 'cause_donations';
     
     protected $fillable = [
+        'donor_id',
         'fundraiser_id',
         'donor_name',
         'donor_email',
@@ -26,7 +27,11 @@ class CauseDonation extends Model
         'message',
         'tax_deductible',
         'receipt_sent',
-        'metadata'
+        'metadata',
+        'ip_address',
+        'user_agent',
+        'browser',
+        'os'
     ];
 
     protected $casts = [
@@ -39,14 +44,16 @@ class CauseDonation extends Model
         'updated_at' => 'datetime'
     ];
 
-    // NOTE: Currently fundraiser_id references campaigns table
-    // We might need to either:
-    // 1. Change the foreign key to reference fundraisers table
-    // 2. Or use campaigns table for donations
-    
-    // For now, I'll create a relationship assuming we fix the foreign key
+    // Relationships
+    public function donor()
+    {
+        return $this->belongsTo(Donor::class, 'donor_id');
+    }
+
     public function fundraiser()
     {
+        // IMPORTANT: Check if your database has fundraiser_id referencing fundraisers table
+        // If not, you might need to use campaigns table
         return $this->belongsTo(Fundraiser::class, 'fundraiser_id');
     }
 
@@ -66,5 +73,11 @@ class CauseDonation extends Model
     public function getDonorDisplayNameAttribute()
     {
         return $this->is_anonymous ? 'Anonymous' : $this->donor_name;
+    }
+
+    // Get formatted amount
+    public function getFormattedAmountAttribute()
+    {
+        return $this->currency . ' ' . number_format($this->amount, 2);
     }
 }
