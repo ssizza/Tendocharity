@@ -71,6 +71,19 @@
             }
         }
     },
+    "team": {
+        "builder": true,
+        "name": "Team Section",
+        "content": {
+            "heading": "text",
+            "subheading": "textarea",
+            "show_filters": "checkbox",
+            "items_per_page": {
+                "type": "select",
+                "options": ["4", "6", "8", "12"]
+            }
+        }
+    },
     "vision": {
         "builder": true,
         "name": "Vision Section",

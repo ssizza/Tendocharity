@@ -21,7 +21,12 @@ Route::controller('TicketController')->prefix('ticket')->name('ticket.')->group(
     Route::post('close/{id}', 'closeTicket')->name('close');
     Route::get('download/{attachment_id}', 'ticketDownload')->name('download');
 });
-
+// Team Routes - Add this before the dynamic route
+Route::controller('TeamController')->prefix('team')->name('team.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/category/{slug}', 'category')->name('category');
+    Route::get('/{id}/{slug?}', 'show')->name('member');
+});
 // Events Routes
 Route::controller('SiteController')->name('event.')->prefix('events')->group(function () {
     Route::get('/', 'events')->name('index');
@@ -97,6 +102,7 @@ Route::controller(\App\Http\Controllers\Gateway\DonationPaymentController::class
     Route::get('/donation/cancel/{reference}', 'cancel')->name('donation.cancel');
     Route::get('/donation/status/{reference}', 'checkDonationStatus')->name('donation.status');
 });
+
 
 // Update existing donation route to use new controller
 Route::post('/fundraisers/{id}/donate', [\App\Http\Controllers\Gateway\DonationPaymentController::class, 'insertDonation'])

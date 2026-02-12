@@ -139,7 +139,8 @@ function getPageSections($arr = false)
         $sections = json_decode(file_get_contents($jsonUrl), true);
         ksort($sections);
     }
-    return $sections;
+    return $sections; 
+    
 }
 
 
