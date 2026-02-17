@@ -12,7 +12,6 @@ use App\Lib\CurlRequest;
 use App\Lib\FileManager;
 use App\Models\Language;
 use App\Models\Role;
-use App\Models\ShoppingCart;
 use App\Notify\Notify;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
@@ -597,23 +596,5 @@ function responseError($remark, $notify, $data = null)
     return buildResponse($remark, 'error', $notify, $data);
 }
 
-function getProductModuleLogo($type)
-{
-    $image = '';
-    $class = '';
 
-    if ($type == 1) {
-        $image = 'cpanel.png';
-        $class = 'cpanel-logo';
-    } elseif ($type == 2) {
-        $image = 'directadmin.png';
-        $class = 'directadmin-logo';
-    } elseif ($type == 3) {
-        $image = 'plesk.png';
-        $class = 'plesk-logo';
-    }
-
-    $src = getImage(getFilePath('productModule') . "/$image");
-    return "<img src='$src' alt='Product Module Logo' class='product-module-$class' />";
-}
 
