@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Constants\Status;
-use App\DomainRegisters\Register;
 use App\Models\AdminNotification;
 use App\Models\Frontend;
 use App\Models\Language;
 use App\Models\Subscriber;
 use App\Models\Page;
-use App\Models\Product;
 use App\Models\ServiceCategory;
 use App\Models\SupportMessage;
 use App\Models\SupportTicket;
@@ -403,49 +401,6 @@ class SiteController extends Controller
         return view('maintenance', compact('pageTitle', 'maintenance'));
     }
 
-    public function registerDomain(Request $request)
-    {
-        $pageTitle = 'Register New Domain';
-        $domain = strtolower($request->domain);
-        $result = [];
-
-        if ($domain) {
-            $request->validate([
-                'domain' => ['regex:/^[a-zA-Z0-9.-]+$/']
-            ]);
-
-            $defaultDomainRegister = DomainRegister::getDefault();
-            if (!$defaultDomainRegister) {
-                $notify[] = ['info', 'There is no default domain register, please setup default domain register'];
-                return redirect()->route('register.domain')->withNotify($notify);
-            }
-            
-            $request->merge(['domain' => $domain]);
-
-            $register = new Register($defaultDomainRegister->alias);
-            $register->command = 'searchDomain';
-            $register->domain = $domain;
-            $execute = $register->run();
-
-            if (!$execute['success']) {
-                $notify = [];
-                foreach ((array) $execute['message'] as $message) {
-                    $notify[] = ['error', $message];
-                }
-                return redirect()->route('register.domain')->withNotify($notify);
-            }
-
-            if (@$execute['data']['status'] == 'ERROR') {
-                $notify[] = ['error', $execute['data']['message']];
-                return redirect()->route('register.domain')->withNotify($notify);
-            }
-
-            $result = $execute;
-        }
-
-        return view('register_domain', compact('pageTitle', 'result'));
-    }
-
     public function serviceCategory($slug = null)
     {
         $serviceCategory = ServiceCategory::active()
@@ -456,29 +411,6 @@ class SiteController extends Controller
 
         $pageTitle = $serviceCategory->name;
         return view('service_category', compact('pageTitle', 'serviceCategory'));
-    }
-
-    public function productConfigure($categorySlug, $productSlug, $id)
-    {
-        $product = Product::active()
-            ->where('id', $id)
-            ->whereHas('serviceCategory', function ($query) {
-                $query->where('status', Status::ENABLE);
-            })
-            ->whereHas('price', function ($query) {
-                $query->where('status', Status::ENABLE);
-            })
-            ->with('getConfigs.activeGroup.activeOptions.activeSubOptions.getOnlyPrice')
-            ->firstOrFail();
-
-        $domains = [];
-        $pageTitle = 'Product Configure';
-
-        if ($product->domain_register) {
-            $domains = DomainSetup::active()->orderBy('id', 'DESC')->with('pricing')->get();
-        }
-
-        return view('product_configure', compact('product', 'pageTitle', 'domains'));
     }
 
     public function subscribe(Request $request)
@@ -497,56 +429,6 @@ class SiteController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Thank you, we will notice you our latest news']);
     }
-
-    public function searchDomain(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'domain' => ['required', 'regex:/^[a-zA-Z0-9.-]+$/']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => [$validator->errors()->all()],
-            ]);
-        }
-
-        $domain = strtolower($request->domain);
-        $request->merge(['domain' => $domain]);
-
-        $defaultDomainRegister = DomainRegister::getDefault();
-        if (!$defaultDomainRegister) {
-            return response()->json([
-                'success' => false,
-                'message' => 'There is no default domain register, Please setup default domain register'
-            ]);
-        }
-
-        $register = new Register($defaultDomainRegister->alias);
-        $register->command = 'searchDomain';
-        $register->domain = $domain;
-        $execute = $register->run();
-
-        if (!$execute['success']) {
-            return response()->json([
-                'success' => false,
-                'message' => $execute['message']
-            ]);
-        }
-
-        if (@$execute['data']['status'] == 'ERROR') {
-            return response()->json([
-                'success' => false,
-                'message' => $execute['data']['message']
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'result' => $execute
-        ]);
-    }
-    
 
     public function upcomingEvents()
     {
