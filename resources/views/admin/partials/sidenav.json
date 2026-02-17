@@ -34,7 +34,32 @@
             }
         ]
     },
-         "manage_events": {
+    "manage_team": {
+        "title": "Team Management",
+        "icon": "las la-users",
+        "menu_active": ["admin.team*"],
+        "submenu": [
+            {
+                "keyword": ["Team Categories", "Categories", "Team Groups"],
+                "title": "Team Categories",
+                "route_name": "admin.team.categories.index",
+                "menu_active": "admin.team.categories.index"
+            },
+            {
+                "keyword": ["All Team Members", "Team list", "Members", "Staff"],
+                "title": "All Team Members",
+                "route_name": "admin.team.index",
+                "menu_active": "admin.team.index"
+            },
+            {
+                "keyword": ["Add Team Member", "New Member", "Create Member"],
+                "title": "Add Team Member",
+                "route_name": "admin.team.create",
+                "menu_active": "admin.team.create"
+            }
+        ]
+    },
+    "manage_events": {
         "title": "Manage Events",
         "icon": "las la-calendar-alt",
         "menu_active": ["admin.events*"],
@@ -84,7 +109,7 @@
             }
         ]
     },
- "manage_fundraisers": {
+    "manage_fundraisers": {
         "title": "Manage Fundraisers",
         "icon": "las la-hand-holding-heart",
         "menu_active": ["admin.fundraisers*", "admin.categories*"],
@@ -121,7 +146,6 @@
             }
         ]
     },
-
     "automation_errors": {
         "keyword": ["Automation Errors", "Automation", "Errors"],
         "title": "Automation Errors",
@@ -162,7 +186,6 @@
             }
         ]
     },
-
     "subscriber": {
         "keyword": ["subscriber", "subscribers", "Subscription management", "Subscriber list", "Subscriber activity"],
         "title": "Subscribers",

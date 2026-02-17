@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\Fundraisers\CategoryController;
 use App\Http\Controllers\Admin\Fundraisers\FundraiserController;
+use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\TeamCategoryController;
 
 Route::namespace('Auth')->group(function () {
     Route::middleware('admin.guest')->group(function(){
@@ -268,24 +270,24 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::post('gallery/delete/{id}', 'EventController@deleteGallery')->name('gallery.delete');
     });
 
-Route::name('services.')->prefix('services')->group(function () {
-    // Services CRUD
-    Route::get('/', [ServiceController::class, 'index'])->name('index');
-    Route::get('create', [ServiceController::class, 'create'])->name('create');
-    Route::post('store', [ServiceController::class, 'store'])->name('store');
-    Route::get('edit/{service}', [ServiceController::class, 'edit'])->name('edit');
-    Route::put('update/{service}', [ServiceController::class, 'update'])->name('update'); // CHANGED TO PUT
-    Route::post('delete/{service}', [ServiceController::class, 'destroy'])->name('delete');
-    Route::post('status/{service}', [ServiceController::class, 'toggleStatus'])->name('status');
-    
-    // Service Stories
-    Route::get('stories', [ServiceController::class, 'stories'])->name('stories');
-    Route::get('stories/create', [ServiceController::class, 'createStory'])->name('stories.create');
-    Route::post('stories/store', [ServiceController::class, 'storeStory'])->name('stories.store');
-    Route::get('stories/edit/{story}', [ServiceController::class, 'editStory'])->name('stories.edit');
-    Route::put('stories/update/{story}', [ServiceController::class, 'updateStory'])->name('stories.update'); // ALSO CHANGE THIS
-    Route::post('stories/delete/{story}', [ServiceController::class, 'destroyStory'])->name('stories.delete');
-});
+    Route::name('services.')->prefix('services')->group(function () {
+        // Services CRUD
+        Route::get('/', [ServiceController::class, 'index'])->name('index');
+        Route::get('create', [ServiceController::class, 'create'])->name('create');
+        Route::post('store', [ServiceController::class, 'store'])->name('store');
+        Route::get('edit/{service}', [ServiceController::class, 'edit'])->name('edit');
+        Route::put('update/{service}', [ServiceController::class, 'update'])->name('update'); // CHANGED TO PUT
+        Route::post('delete/{service}', [ServiceController::class, 'destroy'])->name('delete');
+        Route::post('status/{service}', [ServiceController::class, 'toggleStatus'])->name('status');
+        
+        // Service Stories
+        Route::get('stories', [ServiceController::class, 'stories'])->name('stories');
+        Route::get('stories/create', [ServiceController::class, 'createStory'])->name('stories.create');
+        Route::post('stories/store', [ServiceController::class, 'storeStory'])->name('stories.store');
+        Route::get('stories/edit/{story}', [ServiceController::class, 'editStory'])->name('stories.edit');
+        Route::put('stories/update/{story}', [ServiceController::class, 'updateStory'])->name('stories.update'); // ALSO CHANGE THIS
+        Route::post('stories/delete/{story}', [ServiceController::class, 'destroyStory'])->name('stories.delete');
+    });
 
     Route::controller('CronConfigurationController')->name('cron.')->prefix('cron')->group(function () {
         Route::get('index', 'cronJobs')->name('index');
@@ -397,32 +399,57 @@ Route::name('services.')->prefix('services')->group(function () {
     });
 
 
-        // Fundraiser Routes
-        Route::prefix('fundraisers')->name('fundraisers.')->group(function () {
-            // Categories
-            Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
-            Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
-            Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
-            Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-            Route::post('categories/{category}/update', [CategoryController::class, 'update'])->name('categories.update');
-            Route::post('categories/{category}/status', [CategoryController::class, 'toggleStatus'])->name('categories.status');
-            Route::post('categories/{category}/delete', [CategoryController::class, 'destroy'])->name('categories.delete');
-            
-            // Fundraisers
-            Route::get('/', [FundraiserController::class, 'index'])->name('index');
-            Route::get('pending', [FundraiserController::class, 'pending'])->name('pending');
-            Route::get('create', [FundraiserController::class, 'create'])->name('create');
-            Route::post('store', [FundraiserController::class, 'store'])->name('store');
-            Route::get('{fundraiser}/edit', [FundraiserController::class, 'edit'])->name('edit');
-            Route::post('{fundraiser}/update', [FundraiserController::class, 'update'])->name('update');
-            Route::post('{fundraiser}/status', [FundraiserController::class, 'updateStatus'])->name('status');
-            Route::post('{fundraiser}/approve', [FundraiserController::class, 'approve'])->name('approve');
-            Route::post('{fundraiser}/reject', [FundraiserController::class, 'reject'])->name('reject');
-            Route::post('{fundraiser}/toggle-featured', [FundraiserController::class, 'toggleFeatured'])->name('toggle.featured');
-            Route::post('{fundraiser}/delete', [FundraiserController::class, 'destroy'])->name('delete');
-            
-            // Ajax
-            Route::get('get-type-fields', [FundraiserController::class, 'getTypeFields'])->name('get.type.fields');
-        });
-});
+    // Fundraiser Routes
+    Route::prefix('fundraisers')->name('fundraisers.')->group(function () {
+        // Categories
+        Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::post('categories/{category}/update', [CategoryController::class, 'update'])->name('categories.update');
+        Route::post('categories/{category}/status', [CategoryController::class, 'toggleStatus'])->name('categories.status');
+        Route::post('categories/{category}/delete', [CategoryController::class, 'destroy'])->name('categories.delete');
+        
+        // Fundraisers
+        Route::get('/', [FundraiserController::class, 'index'])->name('index');
+        Route::get('pending', [FundraiserController::class, 'pending'])->name('pending');
+        Route::get('create', [FundraiserController::class, 'create'])->name('create');
+        Route::post('store', [FundraiserController::class, 'store'])->name('store');
+        Route::get('{fundraiser}/edit', [FundraiserController::class, 'edit'])->name('edit');
+        Route::post('{fundraiser}/update', [FundraiserController::class, 'update'])->name('update');
+        Route::post('{fundraiser}/status', [FundraiserController::class, 'updateStatus'])->name('status');
+        Route::post('{fundraiser}/approve', [FundraiserController::class, 'approve'])->name('approve');
+        Route::post('{fundraiser}/reject', [FundraiserController::class, 'reject'])->name('reject');
+        Route::post('{fundraiser}/toggle-featured', [FundraiserController::class, 'toggleFeatured'])->name('toggle.featured');
+        Route::post('{fundraiser}/delete', [FundraiserController::class, 'destroy'])->name('delete');
+        
+        // Ajax
+        Route::get('get-type-fields', [FundraiserController::class, 'getTypeFields'])->name('get.type.fields');
+    });
 
+    // ==================== TEAM MANAGEMENT ROUTES ====================
+    Route::prefix('team')->name('team.')->group(function () {
+        // Team Categories
+        Route::controller(TeamCategoryController::class)->prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('store', 'store')->name('store');
+            Route::put('update/{id}', 'update')->name('update');
+            Route::delete('destroy/{id}', 'destroy')->name('destroy');
+            Route::post('toggle-status/{id}', 'toggleStatus')->name('toggle-status');
+            Route::get('select2', 'getSelect2')->name('select2');
+        });
+
+        // Team Members
+        Route::controller(TeamController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('{id}/edit', 'edit')->name('edit');
+            Route::put('update/{id}', 'update')->name('update');
+            Route::delete('destroy/{id}', 'destroy')->name('destroy');
+            Route::post('toggle-status/{id}', 'toggleStatus')->name('toggle-status');
+            Route::post('bulk-action', 'bulkAction')->name('bulk-action');
+        });
+    });
+    // ==================== END TEAM MANAGEMENT ROUTES ====================
+});
