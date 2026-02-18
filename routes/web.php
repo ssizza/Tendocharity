@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FundraiserController;
-use App\Http\Controllers\DonationController;
-
+use App\Http\Controllers\Gateway\DonationPaymentController;
 
 Route::get('/clear', function(){
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
@@ -21,12 +20,14 @@ Route::controller('TicketController')->prefix('ticket')->name('ticket.')->group(
     Route::post('close/{id}', 'closeTicket')->name('close');
     Route::get('download/{attachment_id}', 'ticketDownload')->name('download');
 });
-// Team Routes - Add this before the dynamic route
+
+// Team Routes
 Route::controller('TeamController')->prefix('team')->name('team.')->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/category/{slug}', 'category')->name('category');
     Route::get('/{id}/{slug?}', 'show')->name('member');
 });
+
 // Events Routes
 Route::controller('SiteController')->name('event.')->prefix('events')->group(function () {
     Route::get('/', 'events')->name('index');
@@ -44,25 +45,44 @@ Route::controller('SiteController')->name('event.')->prefix('events')->group(fun
 Route::controller(FundraiserController::class)->prefix('fundraisers')->name('fundraisers.')->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/{slug}', 'show')->name('show');
-    Route::post('/{id}/donate', 'createDonation')->name('donate');
 });
 
-// Donations Routes
-Route::controller(DonationController::class)->prefix('donations')->name('donations.')->group(function () {
-    Route::post('/create/{fundraiser_id}', 'store')->name('create');
-    Route::get('/success/{id}', 'success')->name('success');
-    Route::get('/cancel/{id}', 'cancel')->name('cancel');
-});
-
-// Services Routes - ADD THIS BEFORE THE DYNAMIC ROUTE
+// Services Routes
 Route::controller('SiteController')->group(function () {
     Route::get('/services', 'services')->name('services');
     Route::get('/services/{slug}', 'serviceDetails')->name('service.details');
 });
 
+// Donation Payment Routes (Complete Payment Flow)
+Route::prefix('donation')->name('donation.')->controller(DonationPaymentController::class)->group(function () {
+    // Step 1: Initiate donation (shows payment methods)
+    Route::get('/initiate/{fundraiserSlug}', 'initiateDonation')->name('initiate');
+    
+    // Step 2: Insert donation record
+    Route::post('/process/{fundraiserId}', 'insertDonation')->name('insert');
+    
+    // Step 3: Confirm and process payment
+    Route::get('/confirm', 'confirmPayment')->name('payment.confirm');
+    
+    // Step 4: Manual payment routes
+    Route::get('/manual', 'manualPayment')->name('payment.manual');
+    Route::post('/manual/submit', 'manualPaymentSubmit')->name('payment.manual.submit');
+    
+    // Step 5: Manual payment confirmation (from old system - keep for backward compatibility)
+    Route::get('/manual/confirm', 'manualConfirm')->name('payment.manual.confirm');
+    Route::post('/manual/update', 'manualUpdate')->name('payment.manual.update');
+    
+    // Step 6: Payment status pages
+    Route::get('/pending/{reference}', 'pending')->name('pending');
+    Route::get('/success/{reference}', 'success')->name('success');
+    Route::get('/cancel/{reference}', 'cancel')->name('cancel');
+    
+    // Step 7: API endpoint for checking status (AJAX)
+    Route::get('/status/{reference}', 'checkDonationStatus')->name('status');
+});
+
 // Main Site Controller Routes
 Route::controller('SiteController')->group(function () {
-     
     Route::get('/store/{slug?}', 'serviceCategory')->name('service.category');
     Route::get('store/{categorySlug}/{productSlug}/{id}', 'productConfigure')->name('product.configure');
 
@@ -90,22 +110,5 @@ Route::controller('SiteController')->group(function () {
     Route::get('/', 'index')->name('home');
 });
 
-// Donation Payment Routes (No Auth Required)
-Route::controller(\App\Http\Controllers\Gateway\DonationPaymentController::class)->group(function () {
-    // Donation payment flow
-    Route::get('/donate/{fundraiser}', 'initiateDonation')->name('donation.initiate');
-    Route::post('/donate/{fundraiser}/process', 'insertDonation')->name('donation.insert');
-    Route::get('/donation/confirm', 'confirmPayment')->name('donation.payment.confirm');
-    Route::get('/donation/manual/confirm', 'manualConfirm')->name('donation.payment.manual.confirm');
-    Route::post('/donation/manual/update', 'manualUpdate')->name('donation.payment.manual.update');
-    Route::get('/donation/success/{reference}', 'success')->name('donation.success');
-    Route::get('/donation/cancel/{reference}', 'cancel')->name('donation.cancel');
-    Route::get('/donation/status/{reference}', 'checkDonationStatus')->name('donation.status');
-});
-
-
-// Update existing donation route to use new controller
-Route::post('/fundraisers/{id}/donate', [\App\Http\Controllers\Gateway\DonationPaymentController::class, 'insertDonation'])
-    ->name('fundraisers.donate');
-
-    
+// Keep backward compatibility with old donation routes if needed
+Route::post('/fundraisers/{id}/donate', [DonationPaymentController::class, 'insertDonation'])->name('fundraisers.donate');

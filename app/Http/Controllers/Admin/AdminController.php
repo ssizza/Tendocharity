@@ -5,11 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Models\AdminNotification;
-use App\Models\User;
+use App\Models\Donor;
+use App\Models\Fundraiser;
+use App\Models\CauseDonation;
+use App\Models\Event;
+use App\Models\EventApplicant;
+use App\Models\Service;
+use App\Models\ServiceStory;
+use App\Models\TeamMember;
+use App\Models\TeamCategory;
+use App\Models\Subscriber;
+use App\Models\Frontend;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -18,35 +29,211 @@ class AdminController extends Controller
     {
         $pageTitle = 'Dashboard';
 
-        // User Info
-        $widget['total_users'] = User::count();
-        $widget['verified_users'] = User::active()->count();
-        $widget['email_unverified_users'] = User::emailUnverified()->count();
-        $widget['mobile_unverified_users'] = User::mobileUnverified()->count();
+        // Donor Stats
+        $widget['total_donors'] = Donor::count();
+        $widget['new_donors_this_month'] = Donor::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        $widget['anonymous_donors'] = Donor::where('is_anonymous', 1)->count();
 
-        // Simplified dashboard - remove hosting/domain specific stats
-        $statistics = [
-            'count_active_service' => 0,
-            'count_domain_service' => 0,
+        // Fundraiser/Campaign Stats
+        $widget['total_campaigns'] = Fundraiser::count();
+        $widget['active_campaigns'] = Fundraiser::where('status', 'active')->count();
+        $widget['pending_campaigns'] = Fundraiser::where('status', 'pending')->count();
+        $widget['completed_campaigns'] = Fundraiser::where('status', 'completed')->count();
+        $widget['draft_campaigns'] = Fundraiser::where('status', 'draft')->count();
+        $widget['featured_campaigns'] = Fundraiser::where('is_featured', 1)->count();
+        
+        // Total campaign goal and raised
+        $widget['total_goal_amount'] = Fundraiser::sum('target_amount');
+        $widget['total_raised_amount'] = Fundraiser::sum('raised_amount');
+
+        // Donation Stats
+        $widget['total_donations'] = CauseDonation::count();
+        $widget['total_donation_amount'] = CauseDonation::where('payment_status', 'completed')->sum('amount');
+        $widget['monthly_donation_amount'] = CauseDonation::where('payment_status', 'completed')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('amount');
+        $widget['pending_donations'] = CauseDonation::where('payment_status', 'pending')->count();
+        $widget['pending_donation_amount'] = CauseDonation::where('payment_status', 'pending')->sum('amount');
+        $widget['failed_donations'] = CauseDonation::where('payment_status', 'failed')->count();
+
+        // Event Stats
+        $widget['total_events'] = Event::count();
+        $widget['upcoming_events'] = Event::where('status', 'upcoming')->count();
+        $widget['ongoing_events'] = Event::where('status', 'ongoing')->count();
+        $widget['completed_events'] = Event::where('status', 'completed')->count();
+        $widget['cancelled_events'] = Event::where('status', 'cancelled')->count();
+        $widget['total_applicants'] = EventApplicant::count();
+        $widget['physical_events'] = Event::where('type', 'physical')->count();
+        $widget['virtual_events'] = Event::where('type', 'virtual')->count();
+
+        // Service Stats
+        $widget['total_services'] = Service::count();
+        $widget['active_services'] = Service::where('status', 'active')->count();
+        $widget['inactive_services'] = Service::where('status', 'inactive')->count();
+        $widget['total_service_stories'] = ServiceStory::count();
+
+        // Team Stats
+        $widget['total_team_members'] = TeamMember::count();
+        $widget['active_team_members'] = TeamMember::where('status', 'active')->count();
+        $widget['team_categories'] = TeamCategory::count();
+
+        // Subscriber Stats
+        $widget['total_subscribers'] = Subscriber::count();
+
+        // Recent Donations
+        $recentDonations = CauseDonation::with('fundraiser')
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        // Top Campaigns by donations
+        $topCampaigns = Fundraiser::withCount('donations as donations_count')
+            ->withSum('donations as total_raised', 'amount')
+            ->where('status', 'active')
+            ->orderByDesc('total_raised')
+            ->limit(5)
+            ->get();
+
+        // Recent Campaigns
+        $recentCampaigns = Fundraiser::latest()
+            ->limit(5)
+            ->get();
+
+        // Recent Events
+        $recentEvents = Event::latest()
+            ->limit(5)
+            ->get();
+
+        // Chart Data - Monthly Donations for last 6 months
+        $months = [];
+        $donationData = [];
+        $campaignData = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $months[] = $month->format('M Y');
+            
+            $amount = CauseDonation::where('payment_status', 'completed')
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->sum('amount');
+                
+            $donationData[] = round($amount, 2);
+            
+            $campaignCount = Fundraiser::whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->count();
+                
+            $campaignData[] = $campaignCount;
+        }
+
+        // Campaign status distribution for pie chart
+        $campaignStatusData = [
+            'active' => Fundraiser::where('status', 'active')->count(),
+            'pending' => Fundraiser::where('status', 'pending')->count(),
+            'completed' => Fundraiser::where('status', 'completed')->count(),
+            'cancelled' => Fundraiser::where('status', 'cancelled')->count(),
+            'draft' => Fundraiser::where('status', 'draft')->count(),
         ];
 
-        $invoiceStatistics = (object) [
-            'total_paid' => 0,
-            'total_unpaid' => 0,
-            'total_payment_pending' => 0,
-            'total_refunded' => 0,
-            'unpaid' => 0
+        // Donation payment status distribution
+        $donationStatusData = [
+            'completed' => CauseDonation::where('payment_status', 'completed')->count(),
+            'pending' => CauseDonation::where('payment_status', 'pending')->count(),
+            'failed' => CauseDonation::where('payment_status', 'failed')->count(),
+            'refunded' => CauseDonation::where('payment_status', 'refunded')->count(),
         ];
 
-        $orderStatistics = (object) [
-            'total' => 0,
-            'total_active' => 0,
-            'total_pending' => 0,
-            'total_cancelled' => 0,
-            'pending' => 0
+        // Event status distribution
+        $eventStatusData = [
+            'upcoming' => Event::where('status', 'upcoming')->count(),
+            'ongoing' => Event::where('status', 'ongoing')->count(),
+            'completed' => Event::where('status', 'completed')->count(),
+            'cancelled' => Event::where('status', 'cancelled')->count(),
         ];
 
-        return view('admin.dashboard', compact('pageTitle', 'widget', 'invoiceStatistics', 'orderStatistics', 'statistics'));
+        return view('admin.dashboard', compact(
+            'pageTitle', 
+            'widget', 
+            'recentDonations',
+            'topCampaigns',
+            'recentCampaigns',
+            'recentEvents',
+            'months',
+            'donationData',
+            'campaignData',
+            'campaignStatusData',
+            'donationStatusData',
+            'eventStatusData'
+        ));
+    }
+
+    public function getChartData(Request $request)
+    {
+        $period = $request->get('period', 'month');
+        $campaignId = $request->get('campaign_id');
+        
+        $query = CauseDonation::where('payment_status', 'completed');
+        
+        if ($campaignId) {
+            $query->where('fundraiser_id', $campaignId);
+        }
+        
+        $labels = [];
+        $data = [];
+        
+        switch ($period) {
+            case 'week':
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = now()->subDays($i);
+                    $labels[] = $date->format('D');
+                    
+                    $amount = (clone $query)
+                        ->whereDate('created_at', $date->format('Y-m-d'))
+                        ->sum('amount');
+                        
+                    $data[] = round($amount, 2);
+                }
+                break;
+                
+            case 'year':
+                for ($i = 11; $i >= 0; $i--) {
+                    $month = now()->subMonths($i);
+                    $labels[] = $month->format('M Y');
+                    
+                    $amount = (clone $query)
+                        ->whereMonth('created_at', $month->month)
+                        ->whereYear('created_at', $month->year)
+                        ->sum('amount');
+                        
+                    $data[] = round($amount, 2);
+                }
+                break;
+                
+            default: // month
+                $daysInMonth = now()->daysInMonth;
+                for ($i = 1; $i <= $daysInMonth; $i++) {
+                    $labels[] = $i;
+                    
+                    $amount = (clone $query)
+                        ->whereDay('created_at', $i)
+                        ->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year)
+                        ->sum('amount');
+                        
+                    $data[] = round($amount, 2);
+                }
+                break;
+        }
+        
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+            'total' => array_sum($data)
+        ]);
     }
 
     public function profile()
@@ -131,7 +318,7 @@ class AdminController extends Controller
 
     public function notifications()
     {
-        $notifications = AdminNotification::orderBy('id', 'desc')->with('user')->paginate(getPaginate());
+        $notifications = AdminNotification::orderBy('id', 'desc')->paginate(getPaginate());
         $hasUnread = AdminNotification::where('is_read', Status::NO)->exists();
         $hasNotification = AdminNotification::exists();
         $pageTitle = 'Notifications';
@@ -153,7 +340,6 @@ class AdminController extends Controller
     public function requestReport()
     {
         $pageTitle = 'Your Listed Report & Request';
-        // Removed license validation calls
         $notify[] = ['info', 'This feature has been disabled.'];
         return back()->withNotify($notify);
     }
@@ -164,7 +350,6 @@ class AdminController extends Controller
             'type' => 'required|in:bug,feature',
             'message' => 'required',
         ]);
-        
         
         $notify[] = ['info', 'This feature has been disabled.'];
         return back()->withNotify($notify);
@@ -244,74 +429,35 @@ class AdminController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'input' => 'required',
-            'model_type' => 'required|in:service_category,product',
+            'model_type' => 'required|in:fundraiser,event,service,team_category',
         ]);
      
         if (!$validator->passes()) {
             return response()->json(['error' => $validator->errors()->all()]);
         }
-     
-        // Simplified - always return OK for now since we removed service categories
+        
+        // Check uniqueness based on model type
+        $exists = false;
+        
+        switch ($request->model_type) {
+            case 'fundraiser':
+                $exists = Fundraiser::where('slug', $request->input)->exists();
+                break;
+            case 'event':
+                $exists = Event::where('slug', $request->input)->exists();
+                break;
+            case 'service':
+                $exists = Service::where('slug', $request->input)->exists();
+                break;
+            case 'team_category':
+                $exists = TeamCategory::where('slug', $request->input)->exists();
+                break;
+        }
+        
+        if ($exists) {
+            return response()->json(['error' => ['Slug already exists. Please choose another.']]);
+        }
+        
         return ['success' => true, 'message' => 'OK'];
     }
-
-    
-    
-   public function services()
-{
-    $pageTitle = 'Services';
-    
-    // Try to get services page from Pages table
-    $sections = Page::where('slug', 'services')->first();
-    
-    $seoContents = null;
-    $seoImage = null;
-    
-    if ($sections && $sections->seo_content) {
-        $seoContents = $sections->seo_content;
-        $seoImage = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
-    }
-    
-    // Get active services with campaigns count
-    $services = \App\Models\Service::active()->withCount('campaigns')->get();
-    
-    return view('services', compact(
-        'pageTitle', 
-        'sections', 
-        'seoContents', 
-        'seoImage', 
-        'services'
-    ));
-}
-
-public function serviceDetails($slug)
-{
-    $service = \App\Models\Service::where('slug', $slug)
-        ->active()
-        ->with(['campaigns' => function($query) {
-            $query->active()->latest();
-        }, 'stories', 'caseStudies', 'testimonials'])
-        ->firstOrFail();
-        
-    $pageTitle = $service->title;
-    
-    $seoContents = null;
-    $seoImage = null;
-    
-    // Use service meta data for SEO
-    if ($service->meta_title || $service->meta_description) {
-        $seoContents = (object) [
-            'heading' => $service->meta_title ?: $service->title,
-            'description' => $service->meta_description,
-            'keywords' => $service->meta_keywords
-        ];
-    }
-    
-    return view('service_details', compact(
-        'pageTitle', 
-        'service', 
-        'seoContents', 
-        'seoImage'
-    ));
-}
 }

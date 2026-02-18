@@ -44,11 +44,6 @@ class AppServiceProvider extends ServiceProvider
         // 3. Admin Sidebar Data
         View::composer('admin.partials.sidenav', function ($view) {
             $view->with([
-                'bannedUsersCount'           => User::banned()->count(),
-                'emailUnverifiedUsersCount'  => User::emailUnverified()->count(),
-                'mobileUnverifiedUsersCount' => User::mobileUnverified()->count(),
-                'kycUnverifiedUsersCount'    => User::kycUnverified()->count(),
-                'kycPendingUsersCount'       => User::kycPending()->count(),
                 'pendingTicketCount'         => SupportTicket::whereIn('status', [Status::TICKET_OPEN, Status::TICKET_REPLY])->count(),
                 'countAutomationError'       => AdminNotification::where('api_response', true)->where('is_read', Status::NO)->count(),
                 'updateAvailable'            => version_compare(gs('available_version'), systemDetails()['version'], '>') ? 'v' . gs('available_version') : false,

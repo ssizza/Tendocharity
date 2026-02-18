@@ -33,6 +33,7 @@ Route::namespace('Auth')->group(function () {
 Route::middleware(['admin', 'admin.permission'])->group(function () {
     Route::controller('AdminController')->group(function(){
         Route::get('dashboard', 'dashboard')->name('dashboard');
+        Route::get('chart-data', 'getChartData')->name('chart.data'); 
         Route::get('profile', 'profile')->name('profile');
         Route::post('profile', 'profileUpdate')->name('profile.update');
         Route::get('password', 'password')->name('password');
@@ -130,11 +131,8 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         Route::get('count-by-segment/{methodName}', 'countBySegment')->name('segment.count');
         Route::get('notification-log/{id}', 'notificationLog')->name('notification.log');
 
-        Route::get('orders/{id}', 'orders')->name('orders');
         Route::get('invoices/{id}', 'invoices')->name('invoices');
-        Route::get('cancellations/{id}', 'cancellations')->name('cancellations');
         Route::get('services/{id}', 'services')->name('services');
-        Route::get('domains/{id}', 'domains')->name('domains');
 
         Route::get('add/new', 'addNewForm')->name('add.new.form');
         Route::post('add/new', 'addNew')->name('add.new');
@@ -426,6 +424,22 @@ Route::middleware(['admin', 'admin.permission'])->group(function () {
         // Ajax
         Route::get('get-type-fields', [FundraiserController::class, 'getTypeFields'])->name('get.type.fields');
     });
+    Route::controller('DonationController')->prefix('donations')->name('donations.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/pending', 'pending')->name('pending');
+    Route::get('/completed', 'completed')->name('completed');
+    Route::get('/failed', 'failed')->name('failed');
+    Route::get('/details/{id}', 'details')->name('details');
+    Route::post('/approve/{id}', 'approve')->name('approve');
+    Route::post('/reject/{id}', 'reject')->name('reject');
+    Route::post('/delete/{id}', 'destroy')->name('delete');
+});
+
+// Donors routes
+Route::controller('DonorController')->prefix('donors')->name('donors.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/details/{id}', 'details')->name('details');
+});
 
     // ==================== TEAM MANAGEMENT ROUTES ====================
     Route::prefix('team')->name('team.')->group(function () {

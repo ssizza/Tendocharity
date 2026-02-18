@@ -18,7 +18,7 @@
                 </div>
                 <div class="step active">
                     <div class="step-number">3</div>
-                    <div class="step-label">Bank Details</div>
+                    <div class="step-label">Payment Details</div>
                 </div>
             </div>
 
@@ -28,59 +28,40 @@
                         <div class="mb-3">
                             <i class="fas fa-university fa-3x text-primary"></i>
                         </div>
-                        <h2 class="fw-bold">Bank Transfer Instructions</h2>
-                        <p class="text-muted">Please complete your donation using the bank details below</p>
+                        <h2 class="fw-bold">{{ $gatewayCurrency->method->name }}</h2>
+                        <p class="text-muted">{{ $gatewayCurrency->method->description ?? 'Please complete your donation using the details below' }}</p>
                     </div>
                     
                     <div class="row">
-                        <!-- Left Column: Bank Details -->
-                        <div class="col-lg-6 mb-4 mb-lg-0">
-                            <div class="card border-primary">
+                        <!-- Left Column: Bank/Instructions Details -->
+                        <div class="col-lg-5 mb-4 mb-lg-0">
+                            <div class="card border-primary h-100">
                                 <div class="card-header bg-primary text-white fw-bold">
-                                    <i class="fas fa-info-circle me-2"></i> Bank Account Details
+                                    <i class="fas fa-info-circle me-2"></i> Payment Instructions
                                 </div>
                                 <div class="card-body">
-                                    @php
-                                        $gatewayParams = json_decode($method->gateway_parameter, true);
-                                    @endphp
+                                    @if(!empty($bankDetails))
+                                        @foreach($bankDetails as $key => $value)
+                                            @if(!empty($value))
+                                            <div class="mb-3">
+                                                <div class="text-muted small text-uppercase">{{ str_replace('_', ' ', $key) }}</div>
+                                                <div class="fw-bold">{{ $value }}</div>
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            No payment instructions available. Please contact support.
+                                        </div>
+                                    @endif
                                     
-                                    <div class="mb-3">
-                                        <div class="text-muted small">Bank Name</div>
-                                        <div class="fw-bold">{{ $gatewayParams['bank_name'] ?? 'Tendo Charity Bank' }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <div class="text-muted small">Account Name</div>
-                                        <div class="fw-bold">{{ $gatewayParams['account_name'] ?? 'Tendo Charity Foundation' }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <div class="text-muted small">Account Number</div>
-                                        <div class="fw-bold">{{ $gatewayParams['account_number'] ?? '1234567890' }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <div class="text-muted small">SWIFT/BIC Code</div>
-                                        <div class="fw-bold">{{ $gatewayParams['swift_code'] ?? 'ABCDEFGH' }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <div class="text-muted small">IBAN</div>
-                                        <div class="fw-bold">{{ $gatewayParams['iban'] ?? 'AB12 3456 7890 1234 5678 90' }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <div class="text-muted small">Branch Address</div>
-                                        <div class="fw-bold">{{ $gatewayParams['branch_address'] ?? '123 Charity Street, Hope City, HC 12345' }}</div>
-                                    </div>
-                                    
-                                    <div class="alert alert-warning mt-4">
+                                    <div class="alert alert-info mt-4">
                                         <h6 class="fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Important Notes</h6>
                                         <ul class="mb-0 small">
-                                            <li>Include your reference number in the transfer description</li>
+                                            <li>Use your donation reference in the payment description</li>
                                             <li>Bank transfers may take 2-5 business days to process</li>
-                                            <li>International transfers may incur additional fees</li>
-                                            <li>You must upload proof of payment below</li>
+                                            <li>Upload proof of payment below for faster verification</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -88,13 +69,13 @@
                         </div>
                         
                         <!-- Right Column: Payment Form -->
-                        <div class="col-lg-6">
+                        <div class="col-lg-7">
                             <div class="card">
                                 <div class="card-header bg-light fw-bold">
-                                    <i class="fas fa-file-invoice me-2"></i> Upload Payment Proof
+                                    <i class="fas fa-file-invoice me-2"></i> Submit Payment Details
                                 </div>
                                 <div class="card-body">
-                                    <form action="{{ route('donation.payment.manual.update') }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('donation.payment.manual.submit') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         
                                         <!-- Donation Summary -->
@@ -107,28 +88,34 @@
                                                 <span>Amount to Transfer:</span>
                                                 <span class="fw-bold">{{ $donation->currency }} {{ number_format($donation->amount, 2) }}</span>
                                             </div>
+                                            @php
+                                                $metadata = json_decode($donation->metadata, true);
+                                            @endphp
+                                            @if(isset($metadata['final_amount']) && $metadata['final_amount'] != $donation->amount)
+                                            <div class="d-flex justify-content-between mt-2 text-warning">
+                                                <span>Total including fees:</span>
+                                                <span class="fw-bold">{{ $donation->currency }} {{ number_format($metadata['final_amount'], 2) }}</span>
+                                            </div>
+                                            @endif
                                         </div>
                                         
-                                        <!-- Transaction Details -->
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Bank Transaction ID *</label>
-                                            <input type="text" class="form-control" name="transaction_id" 
-                                                   placeholder="Enter the transaction ID from your bank" required>
-                                            <div class="form-text">This helps us identify your payment</div>
-                                        </div>
+                                        <!-- Dynamic Form Fields from Database -->
+                                        @if($form && $form->form_data)
+                                            <div class="mb-4">
+                                                <h5 class="fw-bold mb-3">Additional Information</h5>
+                                                <x-viser-form identifier="id" identifierValue="{{ $form->id }}" />
+                                            </div>
+                                        @endif
                                         
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Payment Date *</label>
-                                            <input type="date" class="form-control" name="payment_date" 
-                                                   max="{{ date('Y-m-d') }}" required>
-                                        </div>
-                                        
+                                        <!-- Payment Proof Upload (Always Required) -->
                                         <div class="mb-4">
-                                            <label class="form-label fw-bold">Proof of Payment *</label>
+                                            <label class="form-label fw-bold">
+                                                Proof of Payment <span class="text-danger">*</span>
+                                            </label>
                                             <div class="file-upload-area">
                                                 <input type="file" class="form-control" name="payment_proof" 
-                                                       accept="image/*,.pdf" required id="paymentProof">
-                                                <div class="form-text">Upload screenshot or PDF of bank transfer confirmation</div>
+                                                       accept=".jpg,.jpeg,.png,.pdf" required id="paymentProof">
+                                                <div class="form-text">Upload screenshot, photo, or PDF of bank transfer confirmation</div>
                                                 <div class="preview-area mt-3 d-none" id="previewArea">
                                                     <img id="previewImage" class="img-fluid rounded" style="max-height: 200px;">
                                                     <div id="fileName" class="mt-2 text-muted"></div>
@@ -136,23 +123,11 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Instructions -->
-                                        <div class="alert alert-light border mb-4">
-                                            <h6 class="fw-bold mb-2">To ensure quick processing:</h6>
-                                            <ol class="mb-0 small">
-                                                <li>Complete the bank transfer using details on the left</li>
-                                                <li>Take a screenshot or download receipt from your bank</li>
-                                                <li>Fill in your transaction details above</li>
-                                                <li>Upload the payment proof</li>
-                                                <li>Click Submit for Verification</li>
-                                            </ol>
-                                        </div>
-                                        
                                         <!-- Terms -->
                                         <div class="form-check mb-4">
                                             <input class="form-check-input" type="checkbox" id="confirmTransfer" required>
                                             <label class="form-check-label" for="confirmTransfer">
-                                                I confirm that I have completed the bank transfer with the exact amount and reference number
+                                                I confirm that I have completed the payment with the correct amount and reference number
                                             </label>
                                         </div>
                                         
@@ -189,7 +164,7 @@
                                             <div class="timeline-marker"></div>
                                             <div class="timeline-content">
                                                 <div class="fw-bold">Payment Verification</div>
-                                                <small class="text-muted">Our team verifies your bank transfer (1-3 days)</small>
+                                                <small class="text-muted">Our team verifies your payment (1-3 days)</small>
                                             </div>
                                         </div>
                                         <div class="timeline-item">
@@ -268,10 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
     paymentProof.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
-            // Show file name
             fileName.textContent = file.name;
             
-            // Show preview for images
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -286,9 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
             previewArea.classList.add('d-none');
         }
     });
-    
-    // Set max date to today
-    document.querySelector('input[name="payment_date"]').max = new Date().toISOString().split('T')[0];
 });
 </script>
 @endpush

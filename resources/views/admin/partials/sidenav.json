@@ -146,6 +146,43 @@
             }
         ]
     },
+    "manage_donations": {
+        "title": "Manage Donations",
+        "icon": "las la-donate",
+        "menu_active": ["admin.donations*"],
+        "submenu": [
+            {
+                "keyword": ["All Donations", "Donations list", "Donation management", "All transactions"],
+                "title": "All Donations",
+                "route_name": "admin.donations.index",
+                "menu_active": "admin.donations.index"
+            },
+            {
+                "keyword": ["Pending Donations", "Pending verification", "Manual payments", "Awaiting approval"],
+                "title": "Pending Verification",
+                "route_name": "admin.donations.pending",
+                "menu_active": "admin.donations.pending"
+            },
+            {
+                "keyword": ["Completed Donations", "Successful donations", "Approved payments"],
+                "title": "Completed Donations",
+                "route_name": "admin.donations.completed",
+                "menu_active": "admin.donations.completed"
+            },
+            {
+                "keyword": ["Failed Donations", "Cancelled donations", "Rejected payments"],
+                "title": "Failed Donations",
+                "route_name": "admin.donations.failed",
+                "menu_active": "admin.donations.failed"
+            },
+            {
+                "keyword": ["Donors", "Donor management", "Contributors"],
+                "title": "Donors",
+                "route_name": "admin.donors.index",
+                "menu_active": "admin.donors.index"
+            }
+        ]
+    },
     "automation_errors": {
         "keyword": ["Automation Errors", "Automation", "Errors"],
         "title": "Automation Errors",

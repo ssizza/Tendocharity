@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Admin/DonationController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -8,6 +9,7 @@ use App\Models\Fundraiser;
 use App\Models\Donor;
 use App\Models\AdminNotification;
 use Illuminate\Http\Request;
+use App\Constants\Status;
 
 class DonationController extends Controller
 {
@@ -81,20 +83,12 @@ class DonationController extends Controller
         // Update fundraiser stats
         $fundraiser = Fundraiser::find($donation->fundraiser_id);
         if ($fundraiser) {
-            // Update raised amount
             $fundraiser->raised_amount += $donation->amount;
-            
-            // Update progress percentage
-            if ($fundraiser->target_amount > 0) {
-                $fundraiser->progress_percentage = ($fundraiser->raised_amount / $fundraiser->target_amount) * 100;
-            }
-            
-            // Calculate unique donors count for this fundraiser
+            $fundraiser->progress_percentage = ($fundraiser->raised_amount / $fundraiser->target_amount) * 100;
             $fundraiser->donors_count = CauseDonation::where('fundraiser_id', $fundraiser->id)
                 ->where('payment_status', 'completed')
                 ->distinct('donor_email')
-                ->count('donor_email');
-                
+                ->count();
             $fundraiser->save();
         }
 
@@ -109,14 +103,13 @@ class DonationController extends Controller
             }
         }
 
-        // Create admin notification
+        // Create admin notification for tracking
         $adminNotification = new AdminNotification();
         $adminNotification->title = 'Donation approved - ' . $donation->donor_name . ' (' . $donation->payment_reference . ')';
         $adminNotification->click_url = route('admin.donations.details', $donation->id);
-        $adminNotification->user_id = auth()->guard('admin')->id() ?? 0;
         $adminNotification->save();
 
-        // TODO: Send email notification to donor
+        // TODO: Send email notification to donor using notification template
         // $this->sendDonationApprovedEmail($donation);
 
         $notify[] = ['success', 'Donation approved successfully'];
@@ -143,7 +136,7 @@ class DonationController extends Controller
         $metadata = json_decode($donation->metadata, true) ?: [];
         $metadata['rejection'] = [
             'reason' => $request->rejection_reason,
-            'rejected_by' => auth()->guard('admin')->user()->name ?? 'Admin',
+            'rejected_by' => auth()->guard('admin')->user()->name,
             'rejected_at' => now()->toDateTimeString()
         ];
         $donation->metadata = json_encode($metadata);
@@ -153,11 +146,9 @@ class DonationController extends Controller
         $adminNotification = new AdminNotification();
         $adminNotification->title = 'Donation rejected - ' . $donation->donor_name . ' (' . $donation->payment_reference . ')';
         $adminNotification->click_url = route('admin.donations.details', $donation->id);
-        $adminNotification->user_id = auth()->guard('admin')->id() ?? 0;
         $adminNotification->save();
 
         // TODO: Send rejection email to donor with reason
-        // $this->sendDonationRejectedEmail($donation, $request->rejection_reason);
 
         $notify[] = ['warning', 'Donation rejected'];
         return back()->withNotify($notify);
