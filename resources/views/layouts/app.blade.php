@@ -24,7 +24,7 @@
     @stack('style')
 
     <!-- Dynamic color scheme -->
-    <link rel="stylesheet" href="{{ asset('assets/templates/basic/css/color.php') }}?color={{ gs('base_color') }}">
+<link rel="stylesheet" href="{{ url('assets/templates/basic/css/color.php') }}?color={{ gs('base_color') }}">
 </head>
 
 @php echo loadExtension('google-analytics') @endphp
