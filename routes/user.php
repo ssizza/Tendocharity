@@ -77,31 +77,6 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('login/hosting/{id}', 'loginHosting')->name('login.hosting');
             });
 
-            //Invoice
-            Route::controller('InvoiceController')->prefix('invoice')->name('invoice.')->group(function(){
-                Route::post('/create','create')->name('create');
-                Route::get('/view/{id}', 'viewInvoice')->name('view');
-                Route::post('/payment', 'payment')->name('payment')->middleware('kyc');
-                Route::get('/list', 'list')->name('list');
-                Route::get('/download/{id}/{view?}', 'download')->name('download');
-            });
-
-            //Domain
-            Route::controller('DomainController')->prefix('domain')->name('domain.')->group(function(){
-                Route::get('/list', 'list')->name('list');
-                Route::get('/details/{id}', 'details')->name('details');
-                Route::post('/nameserver/update', 'nameServerUpdate')->name('nameserver.update');
-                Route::get('/contact/{id}', 'contact')->name('contact');
-                Route::post('.contact/update', 'contactUpdate')->name('contact.update');
-            });
-
-            //Service / Hosting
-            Route::controller('ServiceController')->prefix('service')->name('service.')->group(function(){
-                Route::get('/list', 'list')->name('list');
-                Route::get('/details/{id}', 'details')->name('details');
-                Route::post('service/cancel/request', 'cancelRequest')->name('cancel.request');
-            });
-
             //Profile setting
             Route::controller('ProfileController')->group(function(){
                 Route::get('profile-setting', 'profile')->name('profile.setting');
@@ -110,26 +85,6 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::post('change-password', 'submitPassword');
             });
 
-
-            // Withdraw
-            Route::controller('WithdrawController')->prefix('withdraw')->name('withdraw')->group(function(){
-                Route::middleware('kyc')->group(function(){
-                    Route::get('/', 'withdrawMoney');
-                    Route::post('/', 'withdrawStore')->name('.money');
-                    Route::get('preview', 'withdrawPreview')->name('.preview');
-                    Route::post('preview', 'withdrawSubmit')->name('.submit');
-                });
-                Route::get('history', 'withdrawLog')->name('.history');
-            });
-        });
-
-        // Payment
-        Route::middleware(['registration.complete', 'kyc'])->prefix('deposit')->name('deposit.')->controller('Gateway\PaymentController')->group(function(){
-            Route::any('/', 'deposit')->name('index');
-            Route::post('insert', 'depositInsert')->name('insert');
-            Route::get('confirm', 'depositConfirm')->name('confirm');
-            Route::get('manual', 'manualDepositConfirm')->name('manual.confirm');
-            Route::post('manual', 'manualDepositUpdate')->name('manual.update');
         });
     });
 });
