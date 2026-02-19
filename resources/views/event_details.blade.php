@@ -5,24 +5,24 @@
     <div class="container">
         <!-- Success Message Alert -->
         @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="las la-check-circle"></i> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+            <i class="las la-check-circle me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
         
         <!-- Error Message Alert -->
         @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="las la-exclamation-circle"></i> {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+            <i class="las la-exclamation-circle me-2"></i> {{ session('error') }}
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
         
         <!-- Validation Errors -->
         @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="las la-exclamation-circle"></i>
+            <i class="las la-exclamation-circle me-2"></i>
             <ul class="mb-0">
                 @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -33,17 +33,17 @@
         @endif
         
         <!-- Event Banner -->
-        <div class="event-banner mb-4 position-relative">
+        <div class="position-relative mb-4">
             <img src="{{ asset('assets/images/events/' . $event->image) }}" 
                  alt="{{ $event->title }}" 
                  class="w-100 rounded" 
                  style="height: 400px; object-fit: cover;">
             @if($event->status === 'upcoming')
-            <span class="event-status-badge bg-primary">Upcoming</span>
+            <span class="position-absolute top-0 end-0 m-3 badge bg-primary rounded-pill py-2 px-3">Upcoming</span>
             @elseif($event->status === 'ongoing')
-            <span class="event-status-badge bg-success">Ongoing</span>
+            <span class="position-absolute top-0 end-0 m-3 badge bg-success rounded-pill py-2 px-3">Ongoing</span>
             @elseif($event->status === 'completed')
-            <span class="event-status-badge bg-secondary">Completed</span>
+            <span class="position-absolute top-0 end-0 m-3 badge bg-secondary rounded-pill py-2 px-3">Completed</span>
             @endif
         </div>
 
@@ -52,17 +52,17 @@
                 <!-- Event Details -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <h1 class="event-title mb-4">{{ $event->title }}</h1>
+                        <h1 class="mb-4" style="color: hsl(var(--heading)); font-size: 2rem;">{{ $event->title }}</h1>
                         
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light p-3 rounded">
-                                        <i class="las la-calendar text-primary fs-4"></i>
+                                    <div class="p-3 rounded" style="background-color: hsl(var(--light))">
+                                        <i class="las la-calendar" style="color: hsl(var(--base)); font-size: 1.5rem;"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-semibold">Date & Time</h6>
-                                        <p class="mb-0 text-muted">
+                                        <h6 class="mb-1 fw-semibold" style="color: hsl(var(--heading))">Date & Time</h6>
+                                        <p class="mb-0" style="color: hsl(var(--body))">
                                             {{ $event->startDate->format('l, F d, Y') }}<br>
                                             {{ $event->startDate->format('h:i A') }} - {{ $event->endDate->format('h:i A') }}
                                         </p>
@@ -71,22 +71,22 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light p-3 rounded">
-                                        <i class="las la-map-marker text-primary fs-4"></i>
+                                    <div class="p-3 rounded" style="background-color: hsl(var(--light))">
+                                        <i class="las la-map-marker" style="color: hsl(var(--base)); font-size: 1.5rem;"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-semibold">Location</h6>
-                                        <p class="mb-0 text-muted">{{ $event->location }}</p>
-                                        <small class="text-muted">{{ $event->type === 'virtual' ? 'Virtual Event' : 'In-person Event' }}</small>
+                                        <h6 class="mb-1 fw-semibold" style="color: hsl(var(--heading))">Location</h6>
+                                        <p class="mb-0" style="color: hsl(var(--body))">{{ $event->location }}</p>
+                                        <small style="color: hsl(var(--body))">{{ $event->type === 'virtual' ? 'Virtual Event' : 'In-person Event' }}</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Description -->
-                        <div class="event-description mb-4">
-                            <h4 class="mb-3 border-bottom pb-2">About This Event</h4>
-                            <div class="content">
+                        <div class="mb-4">
+                            <h4 class="mb-3 pb-2" style="border-bottom: 1px solid hsl(var(--border)); color: hsl(var(--heading))">About This Event</h4>
+                            <div class="content" style="color: hsl(var(--body))">
                                 @if(isset($description['short_description']))
                                     <p class="lead">{{ $description['short_description'] }}</p>
                                 @endif
@@ -122,26 +122,28 @@
                 @if($gallery->count() > 0)
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <h4 class="mb-4 border-bottom pb-2">Event Gallery</h4>
+                        <h4 class="mb-4 pb-2" style="border-bottom: 1px solid hsl(var(--border)); color: hsl(var(--heading))">Event Gallery</h4>
                         <div class="row g-3" id="eventGallery">
                             @foreach($gallery as $image)
                             <div class="col-md-4 col-sm-6">
-                                <div class="gallery-item-wrapper">
+                                <div class="position-relative overflow-hidden rounded">
                                     <a href="{{ asset('assets/images/events/gallery/' . $image->image_url) }}" 
-                                       class="gallery-item d-block position-relative"
+                                       class="d-block position-relative gallery-item"
                                        data-lightbox="event-gallery"
                                        data-title="{{ $image->alt ?? 'Event Image' }}"
                                        data-alt="{{ $image->alt ?? 'Event Image' }}">
                                         <img src="{{ asset('assets/images/events/gallery/' . $image->image_url) }}" 
                                              alt="{{ $image->alt ?? 'Event Image' }}" 
-                                             class="img-fluid rounded gallery-thumbnail"
+                                             class="img-fluid w-100"
+                                             style="height: 200px; object-fit: cover; transition: transform 0.3s ease;"
                                              loading="lazy">
-                                        <div class="gallery-overlay">
-                                            <i class="las la-search-plus"></i>
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                             style="background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s ease;">
+                                            <i class="las la-search-plus text-white" style="font-size: 2rem;"></i>
                                         </div>
                                     </a>
                                     @if($image->alt)
-                                    <p class="text-center small text-muted mt-2 mb-0">{{ Str::limit($image->alt, 30) }}</p>
+                                    <p class="text-center small mt-2 mb-0" style="color: hsl(var(--body))">{{ Str::limit($image->alt, 30) }}</p>
                                     @endif
                                 </div>
                             </div>
@@ -155,8 +157,8 @@
                 @if($isOpenForBooking)
                 <div class="card border-0 shadow-sm" id="booking">
                     <div class="card-body">
-                        <h4 class="mb-4 border-bottom pb-2">Book Your Spot</h4>
-                        <p class="text-muted mb-4">Fill out the form below to register for this event. We'll send you a confirmation email with all the details.</p>
+                        <h4 class="mb-4 pb-2" style="border-bottom: 1px solid hsl(var(--border)); color: hsl(var(--heading))">Book Your Spot</h4>
+                        <p class="mb-4" style="color: hsl(var(--body))">Fill out the form below to register for this event. We'll send you a confirmation email with all the details.</p>
                         
                         <form method="POST" action="{{ route('event.book', $event->id) }}" id="bookingForm">
                             @csrf
@@ -164,38 +166,38 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name" class="form-label required">Full Name</label>
+                                        <label for="name" class="form-label required fw-semibold" style="color: hsl(var(--heading))">Full Name</label>
                                         <input type="text" class="form-control" id="name" name="name" 
                                                value="{{ old('name', auth()->user()->name ?? '') }}" required>
                                         @error('name')
-                                            <span class="text-danger small">{{ $message }}</span>
+                                            <span class="small" style="color: hsl(var(--danger))">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="email" class="form-label required">Email Address</label>
+                                        <label for="email" class="form-label required fw-semibold" style="color: hsl(var(--heading))">Email Address</label>
                                         <input type="email" class="form-control" id="email" name="email" 
                                                value="{{ old('email', auth()->user()->email ?? '') }}" required>
                                         @error('email')
-                                            <span class="text-danger small">{{ $message }}</span>
+                                            <span class="small" style="color: hsl(var(--danger))">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="phone" class="form-label required">Phone Number</label>
+                                        <label for="phone" class="form-label required fw-semibold" style="color: hsl(var(--heading))">Phone Number</label>
                                         <input type="text" class="form-control" id="phone" name="phone" 
                                                value="{{ old('phone', auth()->user()->mobile ?? '') }}" required>
                                         @error('phone')
-                                            <span class="text-danger small">{{ $message }}</span>
+                                            <span class="small" style="color: hsl(var(--danger))">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" id="terms" required>
-                                        <label class="form-check-label" for="terms">
+                                        <label class="form-check-label" for="terms" style="color: hsl(var(--body))">
                                             I agree to receive updates about this event via email
                                         </label>
                                     </div>
@@ -209,8 +211,8 @@
                     </div>
                 </div>
                 @else
-                <div class="alert alert-info">
-                    <i class="las la-info-circle"></i> 
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="las la-info-circle me-2 fs-5"></i>
                     @if($event->status === 'completed')
                         This event has already been completed. Thank you to everyone who participated!
                     @elseif($event->status === 'cancelled')
@@ -227,28 +229,28 @@
                 <!-- Event Stats -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Event Information</h5>
+                        <h5 class="card-title mb-3" style="color: hsl(var(--heading))">Event Information</h5>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Status</span>
-                                <span class="badge bg-{{ $event->status === 'upcoming' ? 'primary' : ($event->status === 'ongoing' ? 'success' : 'secondary') }}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span style="color: hsl(var(--body))">Status</span>
+                                <span class="badge bg-{{ $event->status === 'upcoming' ? 'primary' : ($event->status === 'ongoing' ? 'success' : 'secondary') }} rounded-pill">
                                     {{ ucfirst($event->status) }}
                                 </span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Type</span>
-                                <span>{{ ucfirst($event->type) }}</span>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span style="color: hsl(var(--body))">Type</span>
+                                <span style="color: hsl(var(--heading))">{{ ucfirst($event->type) }}</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Registrations</span>
-                                <span>{{ $applicantsCount }}</span>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span style="color: hsl(var(--body))">Registrations</span>
+                                <span style="color: hsl(var(--heading))">{{ $applicantsCount }}</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Date</span>
-                                <span>{{ $event->startDate->format('M d, Y') }}</span>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span style="color: hsl(var(--body))">Date</span>
+                                <span style="color: hsl(var(--heading))">{{ $event->startDate->format('M d, Y') }}</span>
                             </li>
-                            <li class="list-group-item">
-                                <small class="text-muted">
+                            <li class="list-group-item px-0">
+                                <small style="color: hsl(var(--body))">
                                     <i class="las la-clock"></i> 
                                     {{ $event->startDate->diffForHumans() }}
                                 </small>
@@ -260,7 +262,7 @@
                 <!-- Share Event -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Share This Event</h5>
+                        <h5 class="card-title mb-3" style="color: hsl(var(--heading))">Share This Event</h5>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-outline-primary flex-fill" onclick="shareFacebook()">
                                 <i class="lab la-facebook-f"></i> Facebook
@@ -279,10 +281,10 @@
                 @if($relatedEvents && $relatedEvents->count() > 0)
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Upcoming Events</h5>
+                        <h5 class="card-title mb-3" style="color: hsl(var(--heading))">Upcoming Events</h5>
                         <div class="related-events">
                             @foreach($relatedEvents as $relatedEvent)
-                            <div class="related-event-item mb-3 pb-3 border-bottom">
+                            <div class="mb-3 pb-3" style="border-bottom: 1px solid hsl(var(--border))">
                                 <div class="d-flex gap-3">
                                     <img src="{{ asset('assets/images/events/' . $relatedEvent->image) }}" 
                                          alt="{{ $relatedEvent->title }}" 
@@ -291,11 +293,11 @@
                                     <div>
                                         <h6 class="mb-1">
                                             <a href="{{ route('event.details', ['id' => $relatedEvent->id, 'slug' => Str::slug($relatedEvent->title)]) }}" 
-                                               class="text-dark text-decoration-none">
+                                               style="color: hsl(var(--heading)); text-decoration: none;">
                                                 {{ Str::limit($relatedEvent->title, 40) }}
                                             </a>
                                         </h6>
-                                        <small class="text-muted">
+                                        <small style="color: hsl(var(--body))">
                                             <i class="las la-calendar"></i> 
                                             {{ $relatedEvent->startDate->format('M d, Y') }}
                                         </small>
@@ -313,28 +315,32 @@
 </div>
 
 <!-- Lightbox Modal -->
-<div class="lightbox-modal" id="lightboxModal">
-    <div class="lightbox-modal-content">
-        <button class="lightbox-close" id="lightboxClose">
+<div class="position-fixed top-0 start-0 w-100 h-100" id="lightboxModal" 
+     style="display: none; background: rgba(0,0,0,0.9); z-index: 9999;">
+    <div class="position-relative w-100 h-100 d-flex align-items-center justify-content-center">
+        <button class="position-absolute top-0 end-0 m-4 bg-transparent border-0 text-white" 
+                id="lightboxClose" style="font-size: 2rem; cursor: pointer;">
             <i class="las la-times"></i>
         </button>
-        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
+        <button class="position-absolute start-0 ms-4 bg-transparent border-0 text-white" 
+                id="lightboxPrev" style="font-size: 2rem; cursor: pointer; transform: translateY(-50%); top: 50%;">
             <i class="las la-angle-left"></i>
         </button>
-        <button class="lightbox-nav lightbox-next" id="lightboxNext">
+        <button class="position-absolute end-0 me-4 bg-transparent border-0 text-white" 
+                id="lightboxNext" style="font-size: 2rem; cursor: pointer; transform: translateY(-50%); top: 50%;">
             <i class="las la-angle-right"></i>
         </button>
-        <div class="lightbox-image-container">
-            <img id="lightboxImage" src="" alt="">
-            <div class="lightbox-loader" id="lightboxLoader">
+        <div class="position-relative">
+            <img id="lightboxImage" src="" alt="" style="max-width: 90vw; max-height: 80vh; object-fit: contain; opacity: 0; transition: opacity 0.3s ease;">
+            <div class="position-absolute top-50 start-50 translate-middle" id="lightboxLoader" style="display: none;">
                 <div class="spinner-border text-light" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
-        <div class="lightbox-caption">
-            <p id="lightboxCaption"></p>
-            <div class="lightbox-counter">
+        <div class="position-absolute bottom-0 start-0 w-100 text-center text-white p-4">
+            <p id="lightboxCaption" style="color: hsl(var(--white))"></p>
+            <div class="lightbox-counter" style="color: rgba(255,255,255,0.8);">
                 <span id="currentIndex">1</span> / <span id="totalImages">{{ $gallery->count() }}</span>
             </div>
         </div>
@@ -344,192 +350,23 @@
 
 @push('style')
 <style>
-.event-banner {
-    position: relative;
-}
-
-.event-status-badge {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    color: #fff;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 500;
-    z-index: 1;
-}
-
-.event-title {
-    color: #333;
-    font-weight: 700;
-    font-size: 2rem;
-}
-
-/* Gallery Styles */
-.gallery-item-wrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-}
-
-.gallery-item {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.gallery-thumbnail {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.gallery-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    color: white;
-    font-size: 2rem;
-}
-
-.gallery-item:hover .gallery-overlay {
-    opacity: 1;
-}
-
-.gallery-item:hover .gallery-thumbnail {
+.gallery-item:hover img {
     transform: scale(1.05);
 }
 
-/* Lightbox Modal Styles */
-.lightbox-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 9999;
-    animation: fadeIn 0.3s ease;
+.gallery-item:hover .position-absolute {
+    opacity: 1 !important;
 }
 
-.lightbox-modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.required::after {
+    content: " *";
+    color: hsl(var(--danger));
 }
 
-.lightbox-modal-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
-    width: auto;
-    height: auto;
+.related-event-item:hover {
+    background-color: hsl(var(--light));
 }
 
-.lightbox-image-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-}
-
-#lightboxImage {
-    max-width: 100%;
-    max-height: 70vh;
-    object-fit: contain;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#lightboxImage.loaded {
-    opacity: 1;
-}
-
-.lightbox-loader {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.lightbox-close {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.3s ease;
-}
-
-.lightbox-close:hover {
-    color: #f8f9fa;
-}
-
-.lightbox-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    font-size: 2rem;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.lightbox-nav:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.lightbox-prev {
-    left: 20px;
-}
-
-.lightbox-next {
-    right: 20px;
-}
-
-.lightbox-caption {
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: white;
-    padding: 10px;
-}
-
-.lightbox-counter {
-    margin-top: 5px;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -540,55 +377,9 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .lightbox-nav {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5rem;
-    }
-    
-    .lightbox-prev {
-        left: 10px;
-    }
-    
-    .lightbox-next {
-        right: 10px;
-    }
-    
-    .lightbox-close {
-        top: -35px;
-        font-size: 1.5rem;
-    }
-    
-    .gallery-thumbnail {
-        height: 150px;
-    }
-}
-
-/* Related Events */
-.related-event-item {
-    padding: 10px;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-}
-
-.related-event-item:hover {
-    background: #f8f9fa;
-}
-
-.related-event-item h6 a {
-    text-decoration: none;
-    color: #333;
-}
-
-.related-event-item h6 a:hover {
-    color: var(--base-color);
-}
-
-.required::after {
-    content: " *";
-    color: #dc3545;
+.toast-notification {
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 </style>
 @endpush
@@ -615,7 +406,9 @@ document.addEventListener('DOMContentLoaded', function() {
         title: item.getAttribute('data-title') || ''
     }));
     
-    totalImagesSpan.textContent = images.length;
+    if (totalImagesSpan) {
+        totalImagesSpan.textContent = images.length;
+    }
     
     // Open Lightbox
     galleryItems.forEach((item, index) => {
@@ -628,14 +421,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Open Lightbox Function
     function openLightbox() {
-        lightboxModal.classList.add('active');
+        lightboxModal.style.display = 'flex';
+        lightboxModal.style.animation = 'fadeIn 0.3s ease';
         document.body.style.overflow = 'hidden';
         loadImage(currentIndex);
         updateCounter();
     }
     
     // Close Lightbox
-    lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxClose) {
+        lightboxClose.addEventListener('click', closeLightbox);
+    }
+    
     lightboxModal.addEventListener('click', function(e) {
         if (e.target === lightboxModal) {
             closeLightbox();
@@ -644,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Keyboard Navigation
     document.addEventListener('keydown', function(e) {
-        if (!lightboxModal.classList.contains('active')) return;
+        if (lightboxModal.style.display !== 'flex') return;
         
         switch(e.key) {
             case 'Escape':
@@ -660,8 +457,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Navigation
-    lightboxPrev.addEventListener('click', () => navigate(-1));
-    lightboxNext.addEventListener('click', () => navigate(1));
+    if (lightboxPrev) {
+        lightboxPrev.addEventListener('click', () => navigate(-1));
+    }
+    if (lightboxNext) {
+        lightboxNext.addEventListener('click', () => navigate(1));
+    }
     
     // Navigation Function
     function navigate(direction) {
@@ -682,8 +483,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const image = images[index];
         
         // Show loader
-        lightboxImage.classList.remove('loaded');
-        lightboxLoader.style.display = 'flex';
+        lightboxImage.style.opacity = '0';
+        lightboxLoader.style.display = 'block';
         
         // Create new image for preloading
         const img = new Image();
@@ -706,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Hide loader and show image
             setTimeout(() => {
                 lightboxLoader.style.display = 'none';
-                lightboxImage.classList.add('loaded');
+                lightboxImage.style.opacity = '1';
             }, 300);
         };
         
@@ -715,18 +516,20 @@ document.addEventListener('DOMContentLoaded', function() {
             lightboxImage.src = '{{ asset("assets/images/default.png") }}';
             lightboxImage.alt = 'Image not found';
             lightboxCaption.textContent = 'Image could not be loaded';
-            lightboxImage.classList.add('loaded');
+            lightboxImage.style.opacity = '1';
         };
     }
     
     // Update Counter
     function updateCounter() {
-        currentIndexSpan.textContent = currentIndex + 1;
+        if (currentIndexSpan) {
+            currentIndexSpan.textContent = currentIndex + 1;
+        }
     }
     
     // Close Lightbox Function
     function closeLightbox() {
-        lightboxModal.classList.remove('active');
+        lightboxModal.style.display = 'none';
         document.body.style.overflow = 'auto';
         
         // Reset image state
@@ -734,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lightboxImage.src = '';
             lightboxImage.alt = '';
             lightboxCaption.textContent = '';
-            lightboxImage.classList.remove('loaded');
+            lightboxImage.style.opacity = '0';
         }, 300);
     }
     
@@ -783,7 +586,7 @@ function shareEmail() {
 // Toast Notification
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
-    toast.className = `toast-notification toast-${type}`;
+    toast.className = `toast-notification`;
     toast.textContent = message;
     toast.style.cssText = `
         position: fixed;

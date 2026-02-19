@@ -4,32 +4,41 @@
 <div class="pt-120 pb-80">
     <div class="container">
         <!-- Page Header -->
-        <div class="page-header mb-5">
-            <h1 class="page-title">{{ $pageTitle }}</h1>
+        <div class="text-center mb-5">
+            <h1 class="mb-3" style="color: hsl(var(--heading)); font-size: 2.5rem;">{{ $pageTitle }}</h1>
             @if($sections && isset($sections->secs->header->subheading))
-                <p class="page-desc">{{ $sections->secs->header->subheading }}</p>
+                <p style="color: hsl(var(--body)); max-width: 600px; margin: 0 auto;">{{ $sections->secs->header->subheading }}</p>
             @endif
         </div>
 
         <!-- Event Navigation -->
-        <div class="event-navigation mb-5">
+        <div class="mb-5 p-4 rounded" style="background-color: hsl(var(--light-600));">
             <div class="d-flex flex-wrap gap-3 justify-content-center">
-                <a href="{{ route('event.index') }}" class="btn btn-{{ request()->routeIs('event.index') ? 'primary' : 'outline-primary' }}">
+                <!-- Uncomment the "All Events" button if you want to show all events on a single page -->
+                <!--
+                <a href="{{ route('event.index') }}" 
+                   class="btn btn-{{ request()->routeIs('event.index') ? '' : 'outline-' }}primary">
                     All Events
                 </a>
-                <a href="{{ route('event.upcoming') }}" class="btn btn-{{ request()->routeIs('event.upcoming') ? 'primary' : 'outline-primary' }}">
+                -->
+                <a href="{{ route('event.upcoming') }}" 
+                   class="btn btn-{{ request()->routeIs('event.upcoming') ? '' : 'outline-' }}primary">
                     Upcoming
                 </a>
-                <a href="{{ route('event.ongoing') }}" class="btn btn-{{ request()->routeIs('event.ongoing') ? 'primary' : 'outline-primary' }}">
+                <a href="{{ route('event.ongoing') }}" 
+                   class="btn btn-{{ request()->routeIs('event.ongoing') ? '' : 'outline-' }}primary">
                     Ongoing
                 </a>
-                <a href="{{ route('event.completed') }}" class="btn btn-{{ request()->routeIs('event.completed') ? 'primary' : 'outline-primary' }}">
+                <a href="{{ route('event.completed') }}" 
+                   class="btn btn-{{ request()->routeIs('event.completed') ? '' : 'outline-' }}primary">
                     Past Events
                 </a>
-                <a href="{{ route('event.virtual') }}" class="btn btn-{{ request()->routeIs('event.virtual') ? 'primary' : 'outline-primary' }}">
+                <a href="{{ route('event.virtual') }}" 
+                   class="btn btn-{{ request()->routeIs('event.virtual') ? '' : 'outline-' }}primary">
                     Virtual
                 </a>
-                <a href="{{ route('event.physical') }}" class="btn btn-{{ request()->routeIs('event.physical') ? 'primary' : 'outline-primary' }}">
+                <a href="{{ route('event.physical') }}" 
+                   class="btn btn-{{ request()->routeIs('event.physical') ? '' : 'outline-' }}primary">
                     In-person
                 </a>
             </div>
@@ -46,9 +55,9 @@
                 @empty
                 <div class="col-12">
                     <div class="text-center py-5">
-                        <i class="las la-calendar-times fs-1 text-muted"></i>
-                        <h4 class="mt-3">No events found</h4>
-                        <p class="text-muted">Check back later for events.</p>
+                        <i class="las la-calendar-times fs-1" style="color: hsl(var(--body))"></i>
+                        <h4 class="mt-3" style="color: hsl(var(--heading))">No events found</h4>
+                        <p style="color: hsl(var(--body))">Check back later for events.</p>
                     </div>
                 </div>
                 @endforelse
@@ -64,9 +73,13 @@
             <!-- Dashboard View (Main events page) -->
             
             @if(isset($ongoingEvents) && $ongoingEvents->count() > 0)
-            <div class="section-header mb-4">
-                <h3 class="section-title">Currently Ongoing</h3>
-                <a href="{{ route('event.ongoing') }}" class="section-link">View All</a>
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-4 pb-3" 
+                 style="border-bottom: 2px solid hsl(var(--border))">
+                <h3 style="color: hsl(var(--heading)); margin: 0;">Currently Ongoing</h3>
+                <a href="{{ route('event.ongoing') }}" 
+                   style="color: hsl(var(--base)); text-decoration: none; font-size: 0.9rem;">
+                    View All <i class="las la-arrow-right"></i>
+                </a>
             </div>
             <div class="row g-4 mb-5">
                 @foreach($ongoingEvents as $event)
@@ -78,9 +91,13 @@
             @endif
 
             @if(isset($upcomingEvents) && $upcomingEvents->count() > 0)
-            <div class="section-header mb-4">
-                <h3 class="section-title">Upcoming Events</h3>
-                <a href="{{ route('event.upcoming') }}" class="section-link">View All</a>
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-4 pb-3" 
+                 style="border-bottom: 2px solid hsl(var(--border))">
+                <h3 style="color: hsl(var(--heading)); margin: 0;">Upcoming Events</h3>
+                <a href="{{ route('event.upcoming') }}" 
+                   style="color: hsl(var(--base)); text-decoration: none; font-size: 0.9rem;">
+                    View All <i class="las la-arrow-right"></i>
+                </a>
             </div>
             <div class="row g-4 mb-5">
                 @foreach($upcomingEvents as $event)
@@ -92,9 +109,13 @@
             @endif
 
             @if(isset($recentCompleted) && $recentCompleted->count() > 0)
-            <div class="section-header mb-4">
-                <h3 class="section-title">Recent Events</h3>
-                <a href="{{ route('event.completed') }}" class="section-link">View All</a>
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-4 pb-3" 
+                 style="border-bottom: 2px solid hsl(var(--border))">
+                <h3 style="color: hsl(var(--heading)); margin: 0;">Recent Events</h3>
+                <a href="{{ route('event.completed') }}" 
+                   style="color: hsl(var(--base)); text-decoration: none; font-size: 0.9rem;">
+                    View All <i class="las la-arrow-right"></i>
+                </a>
             </div>
             <div class="row g-4">
                 @foreach($recentCompleted as $event)
@@ -109,93 +130,20 @@
                 (!isset($upcomingEvents) || $upcomingEvents->count() == 0) && 
                 (!isset($recentCompleted) || $recentCompleted->count() == 0))
             <div class="text-center py-5">
-                <i class="las la-calendar-times fs-1 text-muted"></i>
-                <h4 class="mt-3">No events found</h4>
-                <p class="text-muted">Check back later for upcoming events.</p>
+                <i class="las la-calendar-times fs-1" style="color: hsl(var(--body))"></i>
+                <h4 class="mt-3" style="color: hsl(var(--heading))">No events found</h4>
+                <p style="color: hsl(var(--body))">Check back later for upcoming events.</p>
             </div>
             @endif
             
         @else
             <!-- No events found -->
             <div class="text-center py-5">
-                <i class="las la-calendar-times fs-1 text-muted"></i>
-                <h4 class="mt-3">No events found</h4>
-                <p class="text-muted">Check back later for upcoming events.</p>
+                <i class="las la-calendar-times fs-1" style="color: hsl(var(--body))"></i>
+                <h4 class="mt-3" style="color: hsl(var(--heading))">No events found</h4>
+                <p style="color: hsl(var(--body))">Check back later for upcoming events.</p>
             </div>
         @endif
     </div>
 </div>
 @endsection
-
-@push('style')
-<style>
-.page-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.page-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 1rem;
-}
-
-.page-desc {
-    font-size: 1.1rem;
-    color: #666;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.event-navigation {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 10px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-
-.section-link {
-    color: var(--base-color);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.section-link:hover {
-    text-decoration: underline;
-}
-
-.btn-outline-primary {
-    color: var(--base-color);
-    border-color: var(--base-color);
-    background: transparent;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--base-color);
-    border-color: var(--base-color);
-    color: white;
-}
-
-.btn-primary {
-    background-color: var(--base-color);
-    border-color: var(--base-color);
-}
-</style>
-@endpush
