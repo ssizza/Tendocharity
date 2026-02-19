@@ -7,7 +7,7 @@
          @if(isset($hero2->data_values->background_color)) 
          style="background-color: {{ $hero2->data_values->background_color }};"
          @else
-         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+         style="background: linear-gradient(135deg, hsl(var(--base)) 0%, hsl(var(--base-600)) 100%);"
          @endif>
     <div class="container">
         <div class="row align-items-center">
@@ -15,31 +15,31 @@
                 <div class="hero-content text-white">
                     @if(isset($hero2->data_values->emergency_tag))
                     <div class="emergency-tag mb-4">
-                        <span class="badge bg-danger px-4 py-2 fs-6 fw-normal">
+                        <span class="badge bg--danger px-4 py-2 fs-6 fw-normal">
                             {{ __($hero2->data_values->emergency_tag) }}
                         </span>
                     </div>
                     @endif
                     
-                    <h1 class="hero-title display-3 fw-bold mb-3">
+                    <h1 class="hero-title display-3 fw-bold mb-3 text-white">
                         {{ __($hero2->data_values->title ?? 'PawBuddiz Rescue') }}
                     </h1>
                     
-                    <h2 class="hero-subtitle h2 mb-4">
+                    <h2 class="hero-subtitle h2 mb-4 text-white">
                         {{ __($hero2->data_values->subtitle ?? 'EMERGENCY CARE FOR STREET DOGS IN CRISIS') }}
                     </h2>
                     
                     <div class="divider mb-4">
-                        <hr class="border-white border-2 opacity-100" style="width: 100px;">
+                        <hr class="border-white border-2 opacity-100" style="width: 100px; background-color: hsl(var(--white));">
                     </div>
                     
-                    <p class="hero-description lead mb-5">
+                    <p class="hero-description lead mb-5 text-white">
                         {{ __($hero2->data_values->description ?? 'We respond to emergency calls for street dogs in danger, providing immediate medical care and finding safe shelter.') }}
                     </p>
                     
                     @if(isset($hero2->data_values->button_text))
                     <a href="{{ $hero2->data_values->button_link ?? '#' }}" 
-                       class="btn btn-lg btn-light text-dark px-5 py-3 fw-bold">
+                       class="btn btn--light btn--lg text--dark px-5 py-3 fw-bold">
                         {{ __($hero2->data_values->button_text) }}
                         <i class="las la-arrow-right ms-2"></i>
                     </a>
@@ -52,7 +52,7 @@
                 <div class="hero-image-wrapper">
                     <img src="{{ getImage('assets/images/frontend/hero_2/' . $hero2->data_values->hero_image, '800x600') }}" 
                          alt="{{ __($hero2->data_values->title ?? 'Hero Image') }}" 
-                         class="img-fluid rounded-3 shadow-lg">
+                         class="img-fluid custom-radius-10 shadow-lg">
                 </div>
             </div>
             @endif
@@ -60,6 +60,7 @@
     </div>
 </section>
 
+@push('style')
 <style>
 .hero-section {
     min-height: 80vh;
@@ -105,4 +106,5 @@
     }
 }
 </style>
+@endpush
 @endif

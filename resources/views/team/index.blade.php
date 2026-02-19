@@ -1,11 +1,6 @@
 @extends('layouts.frontend')
 
 @section('content')
-{{-- Breadcrumb --}}
-@include('partials.breadcrumb', [
-    'pageTitle' => 'Our Team',
-    'breadcrumb' => @getContent('team_breadcrumb.content', null, true)->first() ?? @getContent('breadcrumb.content', null, true)->first()
-])
 
 <div class="team-page py-60">
     <div class="container">
@@ -29,7 +24,7 @@
         <div class="team-filters mb-40">
             <div class="d-flex justify-content-center flex-wrap gap-3">
                 @foreach($categories as $category)
-                <button class="team-filter-btn btn btn-outline-primary rounded-pill px-4 py-2 
+                <button class="team-filter-btn btn btn--outline-base rounded-pill px-4 py-2 
                             {{ $loop->first ? 'active' : '' }}" 
                         data-category="{{ $category->id }}">
                     {{ $category->name }}
@@ -55,10 +50,10 @@
                         </div>
                         @empty
                         <div class="col-12">
-                            <div class="alert alert-info text-center py-5">
-                                <i class="fas fa-users fa-3x mb-3 text-muted"></i>
-                                <h4>No team members found</h4>
-                                <p class="mb-0 text-muted">We're currently updating our team information for this category.</p>
+                            <div class="alert alert-info text-center py-5" style="background: hsl(var(--info)/0.1); border-color: hsl(var(--info)); color: hsl(var(--heading));">
+                                <i class="fas fa-users fa-3x mb-3" style="color: hsl(var(--info));"></i>
+                                <h4 style="color: hsl(var(--heading));">No team members found</h4>
+                                <p class="mb-0" style="color: hsl(var(--body));">We're currently updating our team information for this category.</p>
                             </div>
                         </div>
                         @endforelse
@@ -73,10 +68,10 @@
                     </div>
                     @empty
                     <div class="col-12">
-                        <div class="alert alert-info text-center py-5">
-                            <i class="fas fa-users fa-3x mb-3 text-muted"></i>
-                            <h4>No team members found</h4>
-                            <p class="mb-0 text-muted">We're currently updating our team information.</p>
+                        <div class="alert alert-info text-center py-5" style="background: hsl(var(--info)/0.1); border-color: hsl(var(--info)); color: hsl(var(--heading));">
+                            <i class="fas fa-users fa-3x mb-3" style="color: hsl(var(--info));"></i>
+                            <h4 style="color: hsl(var(--heading));">No team members found</h4>
+                            <p class="mb-0" style="color: hsl(var(--body));">We're currently updating our team information.</p>
                         </div>
                     </div>
                     @endforelse
@@ -88,28 +83,30 @@
 
 <style>
 .team-page {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: linear-gradient(135deg, hsl(var(--white)) 0%, hsl(var(--light)) 100%);
     min-height: 60vh;
     padding: 60px 0;
 }
 
 .team-filter-btn {
     transition: all 0.3s ease;
-    border: 2px solid #dee2e6;
+    border: 2px solid hsl(var(--border)) !important;
     font-weight: 600;
+    background: transparent !important;
+    color: hsl(var(--body)) !important;
 }
 
 .team-filter-btn.active {
-    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    border-color: transparent;
+    background: linear-gradient(to right, hsl(var(--base)) 0%, hsl(var(--base-600)) 100%) !important;
+    color: hsl(var(--white)) !important;
+    border-color: transparent !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+    box-shadow: 0 5px 15px hsl(var(--base)/0.3);
 }
 
 .team-filter-btn:hover:not(.active) {
-    border-color: #4facfe;
-    color: #4facfe;
+    border-color: hsl(var(--base)) !important;
+    color: hsl(var(--base)) !important;
 }
 
 .team-category-section {
@@ -159,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Hide all sections with animation
             categorySections.forEach(section => {
                 section.style.opacity = '0';
+                section.style.transition = 'opacity 0.3s ease';
                 setTimeout(() => {
                     section.classList.add('d-none');
                 }, 300);
@@ -168,9 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 const targetSection = document.getElementById('category-' + categoryId);
                 targetSection.classList.remove('d-none');
-                setTimeout(() => {
-                    targetSection.style.opacity = '1';
-                }, 50);
+                targetSection.style.opacity = '1';
+                targetSection.style.transition = 'opacity 0.3s ease';
             }, 300);
         });
     });

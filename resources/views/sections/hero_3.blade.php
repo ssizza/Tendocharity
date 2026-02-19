@@ -7,48 +7,48 @@
          @if(isset($hero3->data_values->background_image))
          style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ getImage('assets/images/frontend/hero_3/' . $hero3->data_values->background_image, '1920x800') }}') no-repeat center center/cover;"
          @else
-         style="background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);"
+         style="background: linear-gradient(135deg, hsl(var(--dark)/1) 0%, hsl(var(--dark)/0.8) 100%);"
          @endif>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
-                <div class="hero-content text-white">
-                    <h1 class="hero-foundation-name display-2 fw-bold mb-4">
+                <div class="hero-content">
+                    <h1 class="hero-foundation-name display-2 fw-bold mb-4 text--white">
                         {{ __($hero3->data_values->foundation_name ?? 'THE HANNAH KAREMA FOUNDATION') }}
                     </h1>
                     
-                    <h2 class="hero-tagline h1 mb-4 text-uppercase" style="letter-spacing: 3px;">
+                    <h2 class="hero-tagline h1 mb-4 text-uppercase text--warning">
                         {{ __($hero3->data_values->tagline ?? 'EMPOWERING COMMUNITIES THROUGH ACTION') }}
                     </h2>
                     
-                    <p class="hero-description lead mb-5 mx-auto" style="max-width: 700px;">
+                    <p class="hero-description lead mb-5 mx-auto text--white" style="max-width: 700px; opacity: 0.9;">
                         {{ __($hero3->data_values->description ?? 'Empowering women and girls through education, skill development, and leadership training.') }}
                     </p>
                     
                     <div class="hero-buttons d-flex flex-wrap justify-content-center gap-3 mb-5">
                         @if(isset($hero3->data_values->button1_text))
                         <a href="{{ $hero3->data_values->button1_link ?? '#' }}" 
-                           class="btn btn-lg btn-light text-dark px-5 py-3 fw-bold">
+                           class="btn btn--light btn--lg fw-bold">
                             {{ __($hero3->data_values->button1_text) }}
                         </a>
                         @endif
                         
                         @if(isset($hero3->data_values->button2_text))
                         <a href="{{ $hero3->data_values->button2_link ?? '#' }}" 
-                           class="btn btn-lg btn-outline-light px-5 py-3">
+                           class="btn btn--outline-light btn--lg">
                             {{ __($hero3->data_values->button2_text) }}
                         </a>
                         @endif
                     </div>
                     
                     @if(isset($hero3->data_values->highlight_text))
-                    <div class="hero-highlight mt-5 pt-5 border-top border-white border-opacity-25">
+                    <div class="hero-highlight mt-5 pt-5 border-top" style="border-color: hsl(var(--white)/0.25) !important;">
                         <div class="row align-items-center">
                             <div class="col-lg-8 text-lg-start">
-                                <h4 class="h3 mb-0">{{ __($hero3->data_values->highlight_text) }}</h4>
+                                <h4 class="h3 mb-0 text--white">{{ __($hero3->data_values->highlight_text) }}</h4>
                             </div>
                             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                                <div class="highlight-date h5 mb-0">
+                                <div class="highlight-date h5 mb-0 text--warning">
                                     {{ __($hero3->data_values->highlight_date ?? '22 April, 2024') }}
                                 </div>
                             </div>
@@ -58,7 +58,6 @@
                 </div>
             </div>
         </div>
-</div>
     </div>
 </section>
 
@@ -76,7 +75,6 @@
 
 .hero-tagline {
     font-weight: 300;
-    color: #ffd700 !important;
 }
 
 .hero-description {
@@ -90,7 +88,6 @@
 }
 
 .highlight-date {
-    color: #ffd700;
     font-weight: 600;
 }
 

@@ -3,50 +3,50 @@
 @section('title', $pageTitle)
 
 @section('content')
-<div class="container py-5">
+<div class="container pt-120 pb-120">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <!-- Progress Steps -->
-            <div class="steps mb-5">
-                <div class="step active">
-                    <div class="step-number">1</div>
-                    <div class="step-label">Donor Info</div>
+            <!-- Progress Steps - Using theme variables -->
+            <div class="steps mb-5 position-relative d-flex justify-content-between">
+                <div class="step text-center position-relative flex-1">
+                    <div class="step-number width-30 height-30 rounded--circle bg--base text--white d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold">1</div>
+                    <div class="step-label fs--14px text--base fw-medium">Donor Info</div>
                 </div>
-                <div class="step active">
-                    <div class="step-number">2</div>
-                    <div class="step-label">Payment Method</div>
+                <div class="step text-center position-relative flex-1">
+                    <div class="step-number width-30 height-30 rounded--circle bg--base text--white d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold">2</div>
+                    <div class="step-label fs--14px text--base fw-medium">Payment Method</div>
                 </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Confirmation</div>
+                <div class="step text-center position-relative flex-1">
+                    <div class="step-number width-30 height-30 rounded--circle bg--light text--body d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold">3</div>
+                    <div class="step-label fs--14px text--body">Confirmation</div>
                 </div>
             </div>
 
-            <div class="card shadow-lg border-0">
+            <div class="custom--card border-0">
                 <div class="card-body p-4 p-lg-5">
-                    <div class="row">
+                    <div class="row g-4">
                         <!-- Left Column: Donation Info -->
                         <div class="col-lg-6">
-                            <h2 class="fw-bold mb-4">Complete Your Donation</h2>
+                            <h2 class="fw-bold mb-4 text--heading">Complete Your Donation</h2>
                             
                             <!-- Fundraiser Info -->
-                            <div class="card border-0 bg-light mb-4">
+                            <div class="custom--card bg--light border-0 mb-4">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3">You're donating to:</h5>
-                                    <div class="d-flex align-items-start">
+                                    <h5 class="fw-bold mb-3 text--heading">You're donating to:</h5>
+                                    <div class="d-flex align-items-start gap-3">
                                         <img src="{{ $fundraiser->featured_image_url }}" 
-                                             class="rounded me-3" 
+                                             class="rounded-3" 
                                              style="width: 80px; height: 80px; object-fit: cover;">
                                         <div>
-                                            <h6 class="fw-bold mb-1">{{ $fundraiser->title }}</h6>
-                                            <p class="small text-muted mb-2">{{ Str::limit($fundraiser->tagline, 100) }}</p>
-                                            <div class="progress mb-2" style="height: 6px;">
-                                                <div class="progress-bar bg-success" 
+                                            <h6 class="fw-bold mb-1 text--heading">{{ $fundraiser->title }}</h6>
+                                            <p class="small text--body mb-2">{{ Str::limit($fundraiser->tagline, 100) }}</p>
+                                            <div class="progress mb-2 w-100 bg--light-600" style="height: 6px;">
+                                                <div class="progress-bar bg--success rounded" 
                                                      style="width: {{ $fundraiser->progress_percentage }}%"></div>
                                             </div>
                                             <div class="d-flex justify-content-between small">
-                                                <span class="text-muted">{{ round($fundraiser->progress_percentage, 1) }}% funded</span>
-                                                <span class="text-primary">{{ $fundraiser->currency }} {{ number_format($fundraiser->raised_amount) }} raised</span>
+                                                <span class="text--body">{{ round($fundraiser->progress_percentage, 1) }}% funded</span>
+                                                <span class="text--base">{{ $fundraiser->currency }} {{ number_format($fundraiser->raised_amount) }} raised</span>
                                             </div>
                                         </div>
                                     </div>
@@ -54,21 +54,21 @@
                             </div>
                             
                             <!-- Donation Summary -->
-                            <div class="card border-0 bg-light">
+                            <div class="custom--card bg--light border-0">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3">Donation Summary</h5>
+                                    <h5 class="fw-bold mb-3 text--heading">Donation Summary</h5>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Donation Amount:</span>
-                                        <span class="fw-bold" id="donationAmountSummary">{{ $fundraiser->currency }} 0.00</span>
+                                        <span class="text--body">Donation Amount:</span>
+                                        <span class="fw-bold text--heading" id="donationAmountSummary">{{ $fundraiser->currency }} 0.00</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Payment Fee:</span>
-                                        <span class="fw-bold" id="paymentFeeSummary">{{ $fundraiser->currency }} 0.00</span>
+                                        <span class="text--body">Payment Fee:</span>
+                                        <span class="fw-bold text--heading" id="paymentFeeSummary">{{ $fundraiser->currency }} 0.00</span>
                                     </div>
-                                    <hr>
+                                    <hr class="bg--border">
                                     <div class="d-flex justify-content-between fw-bold">
-                                        <span>Total to Pay:</span>
-                                        <span id="totalAmountSummary">{{ $fundraiser->currency }} 0.00</span>
+                                        <span class="text--heading">Total to Pay:</span>
+                                        <span class="text--base" id="totalAmountSummary">{{ $fundraiser->currency }} 0.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -81,20 +81,20 @@
                                 
                                 <!-- Donation Amount -->
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold">Donation Amount ({{ $fundraiser->currency }})</label>
+                                    <label class="form-label fw-bold text--heading">Donation Amount ({{ $fundraiser->currency }})</label>
                                     <div class="row g-2 mb-3">
                                         @foreach([25, 50, 100, 250, 500] as $amount)
                                         <div class="col-6 col-md-4">
-                                            <button type="button" class="btn btn-outline-primary w-100 amount-btn" 
+                                            <button type="button" class="btn btn--outline-base w-100 amount-btn" 
                                                     data-amount="{{ $amount }}">
                                                 {{ $amount }}
                                             </button>
                                         </div>
                                         @endforeach
                                     </div>
-                                    <div class="input-group">
-                                        <span class="input-group-text">{{ $fundraiser->currency }}</span>
-                                        <input type="number" class="form-control" id="amount" name="amount" 
+                                    <div class="custom-input-box d-flex align-items-center gap-2">
+                                        <span class="text--base fw-bold px-2">{{ $fundraiser->currency }}</span>
+                                        <input type="number" class="flex-grow-1 border-0 bg-transparent" id="amount" name="amount" 
                                                placeholder="Enter custom amount" min="1" step="0.01" required>
                                         <input type="hidden" id="gateway" name="gateway">
                                         <input type="hidden" id="currency" name="currency">
@@ -103,30 +103,30 @@
                                 
                                 <!-- Donor Information -->
                                 <div class="mb-4">
-                                    <h5 class="fw-bold mb-3">Your Information</h5>
+                                    <h5 class="fw-bold mb-3 text--heading">Your Information</h5>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" name="first_name" 
+                                            <input type="text" class="form--control w-100" name="first_name" 
                                                    placeholder="First Name *" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" name="last_name" 
+                                            <input type="text" class="form--control w-100" name="last_name" 
                                                    placeholder="Last Name *" required>
                                         </div>
                                         <div class="col-md-12">
-                                            <input type="email" class="form-control" name="email" 
+                                            <input type="email" class="form--control w-100" name="email" 
                                                    placeholder="Email Address *" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" name="phone" 
+                                            <input type="text" class="form--control w-100" name="phone" 
                                                    placeholder="Phone Number">
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" name="country" 
+                                            <input type="text" class="form--control w-100" name="country" 
                                                    placeholder="Country">
                                         </div>
                                         <div class="col-md-12">
-                                            <textarea class="form-control" name="message" rows="2" 
+                                            <textarea class="form--control w-100" name="message" rows="2" 
                                                       placeholder="Message of support (optional)"></textarea>
                                         </div>
                                     </div>
@@ -134,21 +134,21 @@
                                 
                                 <!-- Donation Options -->
                                 <div class="mb-4">
-                                    <div class="form-check mb-2">
+                                    <div class="custom--checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="is_anonymous" id="anonymous">
-                                        <label class="form-check-label" for="anonymous">
+                                        <label class="form-check-label text--body" for="anonymous">
                                             Make this an anonymous donation
                                         </label>
                                     </div>
-                                    <div class="form-check mb-2">
+                                    <div class="custom--checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="tax_deductible" id="taxDeductible">
-                                        <label class="form-check-label" for="taxDeductible">
+                                        <label class="form-check-label text--body" for="taxDeductible">
                                             This donation is tax deductible
                                         </label>
                                     </div>
-                                    <div class="form-check mb-2">
+                                    <div class="custom--checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="receive_updates" id="receiveUpdates" checked>
-                                        <label class="form-check-label" for="receiveUpdates">
+                                        <label class="form-check-label text--body" for="receiveUpdates">
                                             Receive updates about this fundraiser
                                         </label>
                                     </div>
@@ -156,24 +156,26 @@
                                 
                                 <!-- Payment Methods -->
                                 <div class="mb-4">
-                                    <h5 class="fw-bold mb-3">Select Payment Method</h5>
+                                    <h5 class="fw-bold mb-3 text--heading">Select Payment Method</h5>
                                     <div class="row g-3" id="paymentMethods">
                                         @foreach($gatewayCurrency as $gateway)
                                         <div class="col-12">
-                                            <div class="card payment-method-card" data-gateway="{{ $gateway->method_code }}" data-currency="{{ $gateway->currency }}">
+                                            <div class="payment-method-card custom--card border-2 cursor-pointer" 
+                                                 data-gateway="{{ $gateway->method_code }}" 
+                                                 data-currency="{{ $gateway->currency }}">
                                                 <div class="card-body d-flex align-items-center">
-                                                    <div class="form-check mb-0">
+                                                    <div class="custom--radio mb-0 w-100">
                                                         <input class="form-check-input" type="radio" 
                                                                name="gateway_selector" 
                                                                id="gateway_{{ $gateway->id }}"
                                                                data-gateway="{{ $gateway->method_code }}"
                                                                data-currency="{{ $gateway->currency }}">
-                                                        <label class="form-check-label d-flex align-items-center" for="gateway_{{ $gateway->id }}">
+                                                        <label class="form-check-label d-flex align-items-center w-100" for="gateway_{{ $gateway->id }}">
                                                             <img src="{{ getImage(getFilePath('gateway').'/'.$gateway->method->image) }}" 
                                                                  class="me-3" style="height: 30px;">
                                                             <div>
-                                                                <div class="fw-bold">{{ $gateway->name }}</div>
-                                                                <small class="text-muted">
+                                                                <div class="fw-bold text--heading">{{ __($gateway->name) }}</div>
+                                                                <small class="text--body">
                                                                     Fee: {{ $gateway->fixed_charge }} + {{ $gateway->percent_charge }}%
                                                                 </small>
                                                             </div>
@@ -188,14 +190,14 @@
                                 
                                 <!-- Submit Button -->
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                                    <button type="submit" class="cmn--btn w-100 btn--lg" id="submitBtn" disabled>
                                         <i class="fas fa-lock me-2"></i> Proceed to Payment
                                     </button>
                                 </div>
                                 
                                 <div class="text-center mt-3">
-                                    <small class="text-muted">
-                                        <i class="fas fa-shield-alt me-1"></i> Secure SSL encrypted payment
+                                    <small class="text--body">
+                                        <i class="fas fa-shield-alt me-1 text--base"></i> Secure SSL encrypted payment
                                     </small>
                                 </div>
                             </form>
@@ -210,11 +212,7 @@
 
 @push('style')
 <style>
-.steps {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-}
+/* Minimal custom CSS using theme variables */
 .steps::before {
     content: '';
     position: absolute;
@@ -222,52 +220,73 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: #dee2e6;
+    background: hsl(var(--border));
     z-index: 1;
 }
+
 .step {
-    text-align: center;
-    position: relative;
-    z-index: 2;
     flex: 1;
 }
-.step-number {
+
+.width-30 {
     width: 30px;
+}
+
+.height-30 {
     height: 30px;
-    background: #6c757d;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 8px;
-    font-weight: bold;
 }
-.step.active .step-number {
-    background: #0d6efd;
+
+.flex-1 {
+    flex: 1;
 }
-.step-label {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-.step.active .step-label {
-    color: #0d6efd;
-    font-weight: 500;
-}
+
 .payment-method-card {
-    border: 2px solid #dee2e6;
+    border: 2px solid hsl(var(--border));
     cursor: pointer;
     transition: all 0.3s;
 }
+
 .payment-method-card:hover,
 .payment-method-card.active {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
+    border-color: hsl(var(--base));
+    background-color: hsl(var(--base)/0.05);
 }
+
+.payment-method-card .custom--radio input[type=radio]:checked ~ label::before {
+    border-color: hsl(var(--base)) !important;
+}
+
+.payment-method-card .custom--radio input[type=radio]:checked ~ label::after {
+    background-color: hsl(var(--base)) !important;
+}
+
 .amount-btn.active {
-    background-color: #0d6efd;
-    color: white;
-    border-color: #0d6efd;
+    background-color: hsl(var(--base));
+    color: hsl(var(--white));
+    border-color: hsl(var(--base));
+}
+
+.custom-input-box {
+    border: 1px solid hsl(var(--border));
+    border-radius: 5px;
+    padding: 0.375rem 0;
+    transition: all 0.3s;
+}
+
+.custom-input-box:focus-within {
+    border-color: hsl(var(--base));
+}
+
+.custom-input-box input:focus {
+    outline: none;
+}
+
+.bg--light-600 {
+    background-color: hsl(var(--light-600));
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 </style>
 @endpush
@@ -318,6 +337,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const radio = this.querySelector('input[type="radio"]');
             radio.checked = true;
             
+            // Trigger radio change event for custom radio styling
+            const event = new Event('change', { bubbles: true });
+            radio.dispatchEvent(event);
+            
             // Update form inputs
             selectedGateway = gateway;
             selectedCurrency = currency;
@@ -341,10 +364,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateDonationSummary() {
         const amount = parseFloat(amountInput.value) || 0;
-        const gateway = selectedGateway ? gatewayData[selectedGateway] : null;
+        const gateway = selectedGateway && gatewayData[selectedGateway] ? gatewayData[selectedGateway] : null;
         
         if (gateway && amount > 0) {
-            const charge = gateway.fixed_charge + (amount * gateway.percent_charge / 100);
+            const charge = parseFloat(gateway.fixed_charge) + (amount * parseFloat(gateway.percent_charge) / 100);
             const total = amount + charge;
             
             donationAmountSummary.textContent = `{{ $fundraiser->currency }} ${amount.toFixed(2)}`;
@@ -383,35 +406,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
     });
-});
-</script>
-<script>
-    // Temporary fix - enable button regardless
-document.addEventListener('DOMContentLoaded', function() {
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        submitBtn.disabled = false;
-        
-        // Also auto-select first payment method if none selected
-        const firstPaymentMethod = document.querySelector('.payment-method-card');
-        if (firstPaymentMethod) {
-            const radio = firstPaymentMethod.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-                firstPaymentMethod.classList.add('active');
-                
-                // Set hidden inputs
-                document.getElementById('gateway').value = firstPaymentMethod.dataset.gateway;
-                document.getElementById('currency').value = firstPaymentMethod.dataset.currency;
-            }
-        }
-    }
     
-    // Auto-fill amount from URL parameter
+    // Initialize - check URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount');
     if (amount) {
-        document.getElementById('amount').value = amount;
+        amountInput.value = amount;
+        updateDonationSummary();
     }
     
     // Auto-fill name and email from URL parameters
@@ -420,12 +421,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (donorName) {
         const nameParts = donorName.split(' ');
-        document.querySelector('input[name="first_name"]').value = nameParts[0] || '';
-        document.querySelector('input[name="last_name"]').value = nameParts[1] || '';
+        const firstNameInput = document.querySelector('input[name="first_name"]');
+        const lastNameInput = document.querySelector('input[name="last_name"]');
+        if (firstNameInput) firstNameInput.value = nameParts[0] || '';
+        if (lastNameInput) lastNameInput.value = nameParts.slice(1).join(' ') || '';
     }
     
     if (donorEmail) {
-        document.querySelector('input[name="email"]').value = donorEmail;
+        const emailInput = document.querySelector('input[name="email"]');
+        if (emailInput) emailInput.value = donorEmail;
     }
 });
 </script>
