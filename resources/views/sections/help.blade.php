@@ -1,19 +1,34 @@
 @extends('layouts.frontend')
 
 @php
-    $help = @getContent('help.content', null, true)->first();
+    // Try to get content, if not found, use default data
+    $helpContent = @getContent('help.content', null, true);
+    $help = $helpContent ? $helpContent->first() : null;
+    
+    // Default contact data from your database
+    $defaultContact = (object)[
+        'data_values' => (object)[
+            'heading' => 'Get in Touch',
+            'description' => 'Please do not hesitate to contact our experts if you want advise, have a query, or require technical support.',
+            'email' => 'info@roicharity.org',
+            'phone' => '+256701287388',
+            'address' => 'Vubyabirenge, Plot 136, Ntinda Stretcher P.O. Box 0000 Ntinda, Kampala Uganda, East Africa'
+        ]
+    ];
+    
+    // Use database content if available, otherwise use default
+    $contactData = $help ? $help : $defaultContact;
 @endphp
 
 @section('content')
     <div class="contact-section pt-120 pb-120">
         <div class="container">
             
-            @if($help)
             <!-- Contact Header -->
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 text-center">
-                    <h2 class="section-title">{{ __($help->data_values->heading ?? 'Get in Touch') }}</h2>
-                    <p class="section-description mt-2">{{ __($help->data_values->description ?? 'Please do not hesitate to contact our experts') }}</p>
+                    <h2 class="section-title">{{ __($contactData->data_values->heading ?? 'Get in Touch') }}</h2>
+                    <p class="section-description mt-2">{{ __($contactData->data_values->description ?? 'Please do not hesitate to contact our experts') }}</p>
                 </div>
             </div>
             
@@ -29,7 +44,7 @@
                                     </div>
                                     <div class="contact-card__content">
                                         <h5 class="contact-card__title">@lang('Email')</h5>
-                                        <p class="contact-card__desc">{{ $help->data_values->email }}</p>
+                                        <p class="contact-card__desc">{{ $contactData->data_values->email ?? 'info@roicharity.org' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +55,7 @@
                                     </div>
                                     <div class="contact-card__content">
                                         <h5 class="contact-card__title">@lang('Phone')</h5>
-                                        <p class="contact-card__desc">{{ $help->data_values->phone }}</p>
+                                        <p class="contact-card__desc">{{ $contactData->data_values->phone ?? '+256701287388' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +66,7 @@
                                     </div>
                                     <div class="contact-card__content">
                                         <h5 class="contact-card__title">@lang('Address')</h5>
-                                        <p class="contact-card__desc">{{ __($help->data_values->address) }}</p>
+                                        <p class="contact-card__desc">{{ __($contactData->data_values->address ?? 'Vubyabirenge, Plot 136, Ntinda Stretcher P.O. Box 0000 Ntinda, Kampala Uganda, East Africa') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +74,6 @@
                     </div>
                 </div>
             </div>
-            @endif
             
         </div>
     </div>

@@ -10,13 +10,13 @@ if (isset($_GET['color']) and $_GET['color'] != '') {
     $color = "#" . $_GET['color'];
 }
 if (!$color or !checkHexColor($color)) {
-    $color = "#336699";
+    $color = "#80B4FF";
 }
 if (isset($_GET['secondColor']) and $_GET['secondColor'] != '') {
     $secondColor = "#" . $_GET['secondColor'];
 }
 if (!$secondColor or !checkHexColor($secondColor)) {
-    $secondColor = "#336699";
+    $secondColor = "#80B4FF";
 }
 
 function hexToHsl($hex)
