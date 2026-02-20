@@ -47,7 +47,8 @@
                                 </p>
                             </div>
                             
-                            {{-- Row 2: Key Focus Areas --}}
+                            {{-- Row 2: Key Focus Areas (Commented out for now, can be enabled when needed) --}}
+                            {{--
                             <div class="strategic-focus p-4 rounded-4" style="background-color: hsl(var(--white)); border: 1px solid hsl(var(--border));">
                                 <h4 class="fw-bold mb-4" style="color: hsl(var(--heading));">
                                     <i class="las la-bullseye me-2" style="color: hsl(var(--base));"></i>
@@ -89,6 +90,7 @@
                                     </div>
                                 </div>
                             </div>
+                            --}}
                         </div>
                     </div>
                 </div>
